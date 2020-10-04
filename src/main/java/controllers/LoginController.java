@@ -1,7 +1,7 @@
 package controllers;
 
-import controllers.DTO.LoginRequestDTO;
-import controllers.DTO.LoginResponseDTO;
+import controllers.DTO.login.LoginRequestDTO;
+import controllers.DTO.login.LoginResponseDTO;
 import service.LoginService;
 
 import javax.inject.Inject;
@@ -17,10 +17,7 @@ public class LoginController {
     private LoginService loginService;
 
     @Inject
-    public void setLoginService(LoginService loginService){
-
-        this.loginService = loginService;
-    }
+    public void setLoginService(LoginService loginService){ this.loginService = loginService; }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
