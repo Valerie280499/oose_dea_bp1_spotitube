@@ -1,34 +1,48 @@
 package controllers;
 
-import controllers.DTO.LoginRequestDTO;
+import controllers.DTO.login.LoginRequestDTO;
+import controllers.DTO.login.LoginResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import service.LoginService;
 
-public class LoginControllerTest {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class LoginControllerTest {
+    private LoginRequestDTO fakeLoginRequest;
+    private LoginResponseDTO fakeLoginResponse;
+    private LoginService fakeService;
     private LoginController sut;
-    private LoginRequestDTO loginRequestDTO;
 
     @BeforeEach
-    public void setUp(){
+    void setUp(){
+        fakeLoginRequest = new LoginRequestDTO();
+        fakeLoginRequest.setUser("valerie");
+        fakeLoginRequest.setPassword("blaat");
+
+        fakeLoginResponse = new LoginResponseDTO();
+        fakeLoginResponse.setUser("valerie");
+        fakeLoginResponse.setToken("hello");
+
         sut = new LoginController();
-        loginRequestDTO = new LoginRequestDTO();
     }
+
+    @BeforeEach
+    void setUpMockLoginService() {
+        fakeService = mock(LoginService.class);
+        when(fakeService.login(fakeLoginRequest)).thenReturn(fakeLoginResponse);
+    }
+
     @Test
-    public void testCorrectLoginRequest(){
-        loginRequestDTO.setUser("valerie");
-        loginRequestDTO.setPassword("blaat");
-        var response = sut.login(loginRequestDTO);
+    void correctLoginTest() {
+        sut.setLoginService(fakeService);
+
+        var response = sut.login(fakeLoginRequest);
 
         Assertions.assertEquals(200, response.getStatus());
-    }
 
-    @Test
-    public void testInCorrectLogInRequest(){
-        loginRequestDTO.setUser("Lauren");
-        loginRequestDTO.setPassword("123");
-        var response = sut.login(loginRequestDTO);
-
-        Assertions.assertEquals(401, response.getStatus());
     }
 }
