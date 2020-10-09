@@ -17,7 +17,9 @@ public class LoginController {
     private LoginService loginService;
 
     @Inject
-    public void setLoginService(LoginService loginService){ this.loginService = loginService; }
+    public void setLoginService(LoginService loginService){
+        this.loginService = loginService;
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
