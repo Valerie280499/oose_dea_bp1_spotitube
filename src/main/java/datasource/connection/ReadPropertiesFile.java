@@ -1,4 +1,4 @@
-package database;
+package datasource.connection;
 
 import java.io.IOException;
 import java.util.Properties;

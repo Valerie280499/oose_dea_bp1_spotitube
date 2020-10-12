@@ -2,39 +2,35 @@ package service;
 
 import controllers.DTO.login.LoginRequestDTO;
 import controllers.DTO.login.LoginResponseDTO;
-import database.DatabaseConnection;
-import database.Queries;
+import datasource.dao.UserDAO;
+import domain.interfaces.IUser;
+import service.interfaces.ILoginService;
 
+import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
+import java.util.Optional;
 
-public class LoginService {
-    DatabaseConnection dbConn = new DatabaseConnection();
-    Queries queries = new Queries();
+public class LoginService implements ILoginService {
 
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
-        var query = queries.selectAllFromUserTable();
-        dbConn.connectToDatabase(query);
+    @Inject
+    public UserDAO userDAO = new UserDAO();
 
-        if ("valerie".equals(loginRequestDTO.getUser()) && "blaat".equals(loginRequestDTO.getPassword())){
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
+        IUser user = getUser(loginRequestDTO.getUser());
 
-            LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-            loginResponseDTO.setToken("Hello");
-            loginResponseDTO.setUser("valerie");
+        if (user.getUsername().equals(loginRequestDTO.getUser()) && user.getPassword().equals(loginRequestDTO.getPassword())) {
+            var loginResponseDTO = new LoginResponseDTO();
+            loginResponseDTO.setToken("Hello"); // TO DO
+            loginResponseDTO.setUser(user.getUsername());
 
             return loginResponseDTO;
-        } else{
-            throw new NotAuthorizedException(401);
         }
+        throw new NotAuthorizedException(401);
     }
 
-//    if ("valerie".equals(loginRequestDTO.getUser()) && "blaat".equals(loginRequestDTO.getPassword())){
-//
-//        LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-//        loginResponseDTO.setToken("Hello");
-//        loginResponseDTO.setUser("valerie");
-//
-//        return loginResponseDTO;
-//    } else{
-//        throw new NotAuthorizedException(401);
-//    }
+    @Override
+    public IUser getUser(String username){
+        Optional<IUser> user = userDAO.getUser(username);
+        return user.orElseThrow(() -> new NotAuthorizedException(401));
+    }
 }

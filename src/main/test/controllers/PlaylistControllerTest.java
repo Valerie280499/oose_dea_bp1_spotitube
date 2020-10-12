@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.DTO.playlist.PlaylistDTO;
 import controllers.DTO.playlist.PlaylistsDTO;
+import controllers.rest.PlaylistController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
