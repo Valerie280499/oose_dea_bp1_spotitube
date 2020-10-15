@@ -7,7 +7,6 @@ public class PlaylistsDTO {
     private ArrayList<PlaylistDTO> playlists;
     private int length;
 
-
     public int getLength() {
         return length;
     }

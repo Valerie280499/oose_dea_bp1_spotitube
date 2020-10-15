@@ -30,18 +30,4 @@ public class LoginController {
             return Response.ok().entity(login).build();
     }
 
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Response login(LoginRequestDTO loginRequestDTO){
-//        if ("valerie".equals(loginRequestDTO.getUser()) && "blaat".equals(loginRequestDTO.getPassword())){
-//            LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
-//            loginResponseDTO.setToken("Hello");
-//            loginResponseDTO.setUser("valerie");
-//
-//            return Response.ok().entity(loginResponseDTO).build();
-//        } else{
-//            return Response.status(401).build();
-//        }
-//    }
 }

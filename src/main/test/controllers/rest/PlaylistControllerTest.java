@@ -1,8 +1,7 @@
-package controllers;
+package controllers.rest;
 
 import controllers.DTO.playlist.PlaylistDTO;
 import controllers.DTO.playlist.PlaylistsDTO;
-import controllers.rest.PlaylistController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,13 +29,10 @@ class PlaylistControllerTest {
         fakePlaylists.add(new PlaylistDTO(3, "love country", true));
         fakePlaylistsDTO.setPlaylists(fakePlaylists);
 
-        sut = new PlaylistController();
-    }
-
-    @BeforeEach
-    void setUpFakePlaylistService() {
         fakeService = mock(PlaylistService.class);
         when(fakeService.generatePlaylists()).thenReturn(fakePlaylistsDTO);
+
+        sut = new PlaylistController();
     }
 
     @Test

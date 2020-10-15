@@ -13,14 +13,15 @@ import java.util.Optional;
 public class LoginService implements ILoginService {
 
     @Inject
-    public UserDAO userDAO = new UserDAO();
+    // protected want kan anders niet testen @Jailbreak werkte niet
+    protected UserDAO userDAO = new UserDAO();
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         IUser user = getUser(loginRequestDTO.getUser());
 
         if (user.getUsername().equals(loginRequestDTO.getUser()) && user.getPassword().equals(loginRequestDTO.getPassword())) {
             var loginResponseDTO = new LoginResponseDTO();
-            loginResponseDTO.setToken("Hello"); // TO DO
+            loginResponseDTO.setToken("Hello");
             loginResponseDTO.setUser(user.getUsername());
 
             return loginResponseDTO;

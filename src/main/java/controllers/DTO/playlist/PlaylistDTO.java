@@ -1,11 +1,14 @@
 package controllers.DTO.playlist;
 
+import controllers.DTO.track.TrackDTO;
+
+import java.util.ArrayList;
+
 public class PlaylistDTO {
     private int id;
     private String name;
     private boolean owner;
-    private String[] tracks;
-
+    private ArrayList<TrackDTO> tracks;
 
     public PlaylistDTO(int id, String name, boolean owner) {
         this.id = id;
@@ -40,11 +43,11 @@ public class PlaylistDTO {
         this.owner = owner;
     }
 
-    public String[] getTracks() {
+    public ArrayList<TrackDTO> getTracks() {
         return tracks;
     }
 
-    public void setTracks(String[] tracks) {
+    public void setTracks(ArrayList<TrackDTO> tracks) {
         this.tracks = tracks;
     }
-}
+   }

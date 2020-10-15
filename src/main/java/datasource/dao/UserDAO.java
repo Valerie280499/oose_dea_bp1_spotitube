@@ -37,7 +37,7 @@ public class UserDAO implements IUserDAO {
         }
     }
 
-    private ArrayList<IUser> getUserFromDB(PreparedStatement statement) throws SQLException{
+    public ArrayList<IUser> getUserFromDB(PreparedStatement statement) throws SQLException{
         ArrayList<IUser> userList = new ArrayList<>();
         ResultSet resultSet = statement.executeQuery();
         resultSet.next();

@@ -1,4 +1,4 @@
-package controllers;
+package controllers.rest;
 
 import controllers.DTO.login.LoginRequestDTO;
 import controllers.DTO.login.LoginResponseDTO;
