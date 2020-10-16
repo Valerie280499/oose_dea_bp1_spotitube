@@ -1,7 +1,7 @@
-package datasource.dao;
+package datasource.DAO;
 
 import datasource.connection.JDBCConnection;
-import datasource.dao.interfaces.IUserDAO;
+import datasource.DAO.interfaces.IUserDAO;
 import domain.User;
 import domain.interfaces.IUser;
 

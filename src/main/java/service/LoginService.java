@@ -2,7 +2,7 @@ package service;
 
 import controllers.DTO.login.LoginRequestDTO;
 import controllers.DTO.login.LoginResponseDTO;
-import datasource.dao.UserDAO;
+import datasource.DAO.UserDAO;
 import domain.interfaces.IUser;
 import service.interfaces.ILoginService;
 

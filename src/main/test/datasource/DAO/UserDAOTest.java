@@ -1,4 +1,4 @@
-package datasource.dao;
+package datasource.DAO;
 
 import com.mysql.jdbc.JDBC4Connection;
 import datasource.connection.JDBCConnection;

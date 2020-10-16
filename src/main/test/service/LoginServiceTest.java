@@ -2,7 +2,7 @@ package service;
 
 import controllers.DTO.login.LoginRequestDTO;
 import datasource.connection.JDBCConnection;
-import datasource.dao.UserDAO;
+import datasource.DAO.UserDAO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

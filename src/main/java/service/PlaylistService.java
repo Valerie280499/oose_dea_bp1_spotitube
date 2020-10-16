@@ -2,13 +2,14 @@ package service;
 
 import controllers.DTO.playlist.PlaylistDTO;
 import controllers.DTO.playlist.PlaylistsDTO;
+import service.interfaces.IPlaylistService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 
 @Singleton
-public class PlaylistService {
+public class PlaylistService implements IPlaylistService {
 
     @Inject
     // protected want kan anders niet testen @Jailbreak werkte niet

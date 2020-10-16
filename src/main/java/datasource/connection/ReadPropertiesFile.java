@@ -1,24 +1,24 @@
 package datasource.connection;
 
+import javax.ws.rs.ServerErrorException;
 import java.io.IOException;
 import java.util.Properties;
 
-public class ReadPropertiesFile {
+class ReadPropertiesFile {
     private Properties properties;
 
-    public ReadPropertiesFile() {
+    ReadPropertiesFile() {
         properties = new Properties();
-        properties.getProperty("name_db");
 
         try {
             properties.load(getClass().getClassLoader().getResourceAsStream("db.properties"));
             Class.forName(properties.getProperty("driver"));
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new ServerErrorException(500);
         }
     }
 
-    public Properties getProperties() {
+    Properties getProperties() {
         return properties;
     }
 

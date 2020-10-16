@@ -4,11 +4,12 @@ import controllers.DTO.playlist.PlaylistDTO;
 import controllers.DTO.playlist.PlaylistsDTO;
 import controllers.DTO.track.TrackDTO;
 import controllers.DTO.track.TracksDTO;
+import service.interfaces.ITrackService;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 
-public class TrackService {
+public class TrackService implements ITrackService {
 
     @Inject
     // protected want kan anders niet testen @Jailbreak werkte niet
@@ -29,21 +30,20 @@ public class TrackService {
         return tracksDTO;
     }
 
-    public TracksDTO getAllTracksInAPlaylist(int playlist_id){
-//        PlaylistDTO playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
-//        ArrayList<TrackDTO> tracks = playlistDTO.getTracks();
-
-        tracksDTO.setLength(2);
-        ArrayList<TrackDTO> tracks = new ArrayList<>();
-        tracks.add(new TrackDTO(6, "song6", "singer6", 35, "pink album", 6, "12-07-2015", "undefined", false));
-        tracks.add(new TrackDTO(7, "song7", "singer7", 96, "brown album", 8, "03-07-2010", "undefined", false));
+    public TracksDTO getAllTracksInAPlaylist(int playlist_id) {
+        PlaylistDTO playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
+        ArrayList<TrackDTO> tracks = playlistDTO.getTracks();
 
         tracksDTO.setTracks(tracks);
         return tracksDTO;
     }
+//        tracksDTO.setLength(2);
+//        ArrayList<TrackDTO> tracks = new ArrayList<>();
+//        tracks.add(new TrackDTO(6, "song6", "singer6", 35, "pink album", 6, "12-07-2015", "undefined", false));
+//        tracks.add(new TrackDTO(7, "song7", "singer7", 96, "brown album", 8, "03-07-2010", "undefined", false));
+//        tracksDTO.setTracks(tracks);
 
-    // deze methode staat in de TrackService omdat ik dit logischer vond dan de
-    // PlaylistService. Dit omdat er vanuit een track wordt gehandeld in de code.
+
     public TracksDTO addTrackToPlaylist(int playlist_id, TrackDTO newTrack){
         PlaylistDTO playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
         ArrayList<TrackDTO> tracks = playlistDTO.getTracks();

@@ -1,4 +1,4 @@
-package datasource.dao.interfaces;
+package datasource.DAO.interfaces;
 
 import domain.interfaces.IUser;
 
