@@ -1,7 +1,7 @@
 package controllers.rest;
 
-import controllers.DTO.login.LoginRequestDTO;
-import controllers.DTO.login.LoginResponseDTO;
+import controllers.DTO.LoginRequestDTO;
+import controllers.DTO.LoginResponseDTO;
 import service.LoginService;
 
 import javax.inject.Inject;
@@ -25,7 +25,7 @@ public class LoginController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(LoginRequestDTO loginRequestDTO){
-            LoginResponseDTO login = loginService.login(loginRequestDTO);
+            var login = loginService.login(loginRequestDTO);
 
             return Response.ok().entity(login).build();
     }

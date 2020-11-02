@@ -1,7 +1,7 @@
 package service;
 
-import controllers.DTO.login.LoginRequestDTO;
-import controllers.DTO.login.LoginResponseDTO;
+import controllers.DTO.LoginRequestDTO;
+import controllers.DTO.LoginResponseDTO;
 import datasource.DAO.UserDAO;
 import domain.interfaces.IUser;
 import service.interfaces.ILoginService;
@@ -31,7 +31,7 @@ public class LoginService implements ILoginService {
 
     @Override
     public IUser getUser(String username){
-        Optional<IUser> user = userDAO.getUser(username);
+        var user = userDAO.getUser(username);
         return user.orElseThrow(() -> new NotAuthorizedException(401));
     }
 }

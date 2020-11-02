@@ -1,9 +1,9 @@
 package service;
 
-import controllers.DTO.playlist.PlaylistDTO;
-import controllers.DTO.playlist.PlaylistsDTO;
-import controllers.DTO.track.TrackDTO;
-import controllers.DTO.track.TracksDTO;
+import controllers.DTO.PlaylistDTO;
+import controllers.DTO.PlaylistsDTO;
+import controllers.DTO.TrackDTO;
+import controllers.DTO.TracksDTO;
 import service.interfaces.ITrackService;
 
 import javax.inject.Inject;
@@ -31,8 +31,8 @@ public class TrackService implements ITrackService {
     }
 
     public TracksDTO getAllTracksInAPlaylist(int playlist_id) {
-        PlaylistDTO playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
-        ArrayList<TrackDTO> tracks = playlistDTO.getTracks();
+        var playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
+        var tracks = playlistDTO.getTracks();
 
         tracksDTO.setTracks(tracks);
         return tracksDTO;
@@ -45,8 +45,8 @@ public class TrackService implements ITrackService {
 
 
     public TracksDTO addTrackToPlaylist(int playlist_id, TrackDTO newTrack){
-        PlaylistDTO playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
-        ArrayList<TrackDTO> tracks = playlistDTO.getTracks();
+        var playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
+        var tracks = playlistDTO.getTracks();
 
         tracks.add(new TrackDTO(newTrack.getId(), newTrack.getTitle(),
                 newTrack.getPerformer(), newTrack.getDuration(),

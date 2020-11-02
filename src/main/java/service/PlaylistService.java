@@ -1,7 +1,7 @@
 package service;
 
-import controllers.DTO.playlist.PlaylistDTO;
-import controllers.DTO.playlist.PlaylistsDTO;
+import controllers.DTO.PlaylistDTO;
+import controllers.DTO.PlaylistsDTO;
 import service.interfaces.IPlaylistService;
 
 import javax.inject.Inject;

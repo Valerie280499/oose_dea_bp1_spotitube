@@ -1,7 +1,7 @@
 package controllers.rest;
 
-import controllers.DTO.playlist.PlaylistDTO;
-import controllers.DTO.track.TrackDTO;
+import controllers.DTO.PlaylistDTO;
+import controllers.DTO.TrackDTO;
 import service.PlaylistService;
 import service.TrackService;
 

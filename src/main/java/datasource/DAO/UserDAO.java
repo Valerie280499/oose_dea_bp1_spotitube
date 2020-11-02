@@ -24,9 +24,9 @@ public class UserDAO implements IUserDAO {
     public Optional<IUser> getUser(String username) {
         try{
             var conn = JDBCConnection.createConnection();
-            PreparedStatement statement =  conn.prepareStatement("SELECT * FROM user WHERE username = ?");
+            var statement =  conn.prepareStatement("SELECT * FROM user WHERE username = ?");
             statement.setString(1, username);
-            ArrayList<IUser> foundUser = getUserFromDB(statement);
+            var foundUser = getUserFromDB(statement);
             if (foundUser.isEmpty()) {
                 return Optional.empty();
             } else {
@@ -38,10 +38,10 @@ public class UserDAO implements IUserDAO {
     }
 
     public ArrayList<IUser> getUserFromDB(PreparedStatement statement) throws SQLException{
-        ArrayList<IUser> userList = new ArrayList<>();
-        ResultSet resultSet = statement.executeQuery();
+        var userList = new ArrayList<IUser>();
+        var resultSet = statement.executeQuery();
         resultSet.next();
-        User user = new User(resultSet.getInt("user_id"), resultSet.getString("username"), resultSet.getString("password"));
+        var user = new User(resultSet.getInt("user_id"), resultSet.getString("username"), resultSet.getString("password"));
         userList.add(user);
         return userList;
     }

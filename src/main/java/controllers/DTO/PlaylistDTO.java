@@ -1,6 +1,4 @@
-package controllers.DTO.playlist;
-
-import controllers.DTO.track.TrackDTO;
+package controllers.DTO;
 
 import java.util.ArrayList;
 

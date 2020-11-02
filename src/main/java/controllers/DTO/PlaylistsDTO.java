@@ -1,4 +1,4 @@
-package controllers.DTO.playlist;
+package controllers.DTO;
 
 import java.util.ArrayList;
 
