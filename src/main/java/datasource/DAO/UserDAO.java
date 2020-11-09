@@ -24,7 +24,7 @@ public class UserDAO implements IUserDAO {
     public Optional<IUser> getUser(String username) {
         try{
             var conn = JDBCConnection.createConnection();
-            var statement =  conn.prepareStatement("SELECT * FROM user WHERE username = ?");
+            var statement =  conn.prepareStatement("SELECT * FROM login WHERE username = ?");
             statement.setString(1, username);
             var foundUser = getUserFromDB(statement);
             if (foundUser.isEmpty()) {
@@ -41,7 +41,7 @@ public class UserDAO implements IUserDAO {
         var userList = new ArrayList<IUser>();
         var resultSet = statement.executeQuery();
         resultSet.next();
-        var user = new User(resultSet.getInt("user_id"), resultSet.getString("username"), resultSet.getString("password"));
+        var user = new User(resultSet.getString("username"), resultSet.getString("password"), resultSet.getByte("token"));
         userList.add(user);
         return userList;
     }

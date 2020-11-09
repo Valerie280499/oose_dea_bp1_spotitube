@@ -1,7 +1,6 @@
 package controllers.rest;
 
 import controllers.DTO.LoginRequestDTO;
-import controllers.DTO.LoginResponseDTO;
 import service.LoginService;
 
 import javax.inject.Inject;

@@ -3,19 +3,15 @@ package domain;
 import domain.interfaces.IUser;
 
 public class User implements IUser {
-    private int user_id;
     private String username;
     private String password;
+    private int token;
 
-
-    public User(int user_id, String username, String password) {
-        this.user_id = user_id;
+    public User(String username, String password, int token) {
         this.username = username;
         this.password = password;
+        this.token = token;
     }
-
-    @Override
-    public int getUser_id(){ return user_id; }
 
     @Override
     public String getUsername() {
@@ -29,4 +25,7 @@ public class User implements IUser {
 
     @Override
     public void setPassword(String password) { this.password = password; }
+
+    @Override
+    public int getToken() { return token; }
 }
