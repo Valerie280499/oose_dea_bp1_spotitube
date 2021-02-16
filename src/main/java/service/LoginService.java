@@ -1,14 +1,13 @@
 package service;
 
-import controllers.DTO.LoginRequestDTO;
-import controllers.DTO.LoginResponseDTO;
+import dto.LoginRequestDTO;
+import dto.LoginResponseDTO;
 import datasource.DAO.UserDAO;
 import domain.interfaces.IUser;
 import service.interfaces.ILoginService;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
-import java.util.Optional;
 
 public class LoginService implements ILoginService {
 
@@ -17,7 +16,7 @@ public class LoginService implements ILoginService {
     protected UserDAO userDAO = new UserDAO();
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
-        IUser user = getUser(loginRequestDTO.getUser());
+        var user = getUser(loginRequestDTO.getUser());
 
         if (user.getUsername().equals(loginRequestDTO.getUser()) && user.getPassword().equals(loginRequestDTO.getPassword())) {
             var loginResponseDTO = new LoginResponseDTO();

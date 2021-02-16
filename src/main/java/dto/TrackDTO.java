@@ -1,4 +1,4 @@
-package controllers.DTO;
+package dto;
 
 public class TrackDTO {
     private int id;

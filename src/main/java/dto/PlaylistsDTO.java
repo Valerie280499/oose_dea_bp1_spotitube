@@ -1,4 +1,4 @@
-package controllers.DTO;
+package dto;
 
 import java.util.ArrayList;
 

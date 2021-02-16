@@ -4,7 +4,6 @@ import com.mysql.jdbc.JDBC4Connection;
 
 import javax.ejb.Singleton;
 import java.sql.*;
-import java.util.Properties;
 
 @Singleton
 public class JDBCConnection {

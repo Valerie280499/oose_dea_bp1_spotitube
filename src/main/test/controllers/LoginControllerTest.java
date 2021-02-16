@@ -1,8 +1,8 @@
-package controllers.rest;
+package controllers;
 
-import controllers.DTO.login.LoginRequestDTO;
-import controllers.DTO.login.LoginResponseDTO;
-import controllers.rest.LoginController;
+import dto.LoginRequestDTO;
+import dto.LoginResponseDTO;
+import controllers.LoginController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,8 @@
 package service;
 
-import controllers.DTO.PlaylistDTO;
-import controllers.DTO.PlaylistsDTO;
-import controllers.DTO.TrackDTO;
-import controllers.DTO.TracksDTO;
+import dto.PlaylistsDTO;
+import dto.TrackDTO;
+import dto.TracksDTO;
 import service.interfaces.ITrackService;
 
 import javax.inject.Inject;

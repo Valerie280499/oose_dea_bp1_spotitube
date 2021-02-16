@@ -1,8 +1,8 @@
 package service;
 
-import controllers.DTO.playlist.PlaylistDTO;
-import controllers.DTO.playlist.PlaylistsDTO;
-import controllers.DTO.track.TrackDTO;
+import dto.PlaylistDTO;
+import dto.PlaylistsDTO;
+import dto.TrackDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

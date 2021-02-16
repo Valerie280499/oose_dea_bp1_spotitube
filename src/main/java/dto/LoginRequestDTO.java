@@ -1,4 +1,4 @@
-package controllers.DTO;
+package dto;
 
 public class LoginRequestDTO {
     private String user;

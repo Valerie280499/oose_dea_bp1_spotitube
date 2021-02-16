@@ -25,13 +25,16 @@ public class UserDAO implements IUserDAO {
         try{
             var conn = JDBCConnection.createConnection();
             var statement =  conn.prepareStatement("SELECT * FROM login WHERE username = ?");
+
             statement.setString(1, username);
             var foundUser = getUserFromDB(statement);
+
             if (foundUser.isEmpty()) {
                 return Optional.empty();
             } else {
                 return Optional.of(foundUser.get(0));
             }
+
         } catch(SQLException e){
             return Optional.empty();
         }

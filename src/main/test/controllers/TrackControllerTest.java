@@ -1,7 +1,7 @@
-package controllers.rest;
+package controllers;
 
-import controllers.DTO.track.TrackDTO;
-import controllers.DTO.track.TracksDTO;
+import dto.TrackDTO;
+import dto.TracksDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,6 @@ import service.TrackService;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
