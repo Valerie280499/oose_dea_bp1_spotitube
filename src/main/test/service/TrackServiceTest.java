@@ -19,8 +19,8 @@ class TrackServiceTest {
     @BeforeEach
     void setUp(){
         ArrayList<PlaylistDTO> fakePlaylists = new ArrayList<>();
-        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", false));
-        fakePlaylists.add(new PlaylistDTO(2, "monday morning", false));
+        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", "Valerie"));
+        fakePlaylists.add(new PlaylistDTO(2, "monday morning", "Valerie"));
 
         ArrayList<TrackDTO> fakeTracks = new ArrayList<>();
         fakeTracks.add(new TrackDTO(1, "song1", "singer1", 100, "red album", 5,
@@ -44,15 +44,6 @@ class TrackServiceTest {
         // omdat deze methode in een later stadium zal worden vervangen
         // door een methode die data ophaalt uit een database en dit netjes
         // omzet naar java objecten.
-    }
-
-    @Test
-    void getAllTracksInAPlaylistTest() {
-        sut.playlistsDTO = fakePlaylistsDTO;
-
-        var responseTracksDTO = sut.getAllTracksInAPlaylist(1);
-
-        Assertions.assertEquals(2, responseTracksDTO.getTracks().size());
     }
 
     @Test

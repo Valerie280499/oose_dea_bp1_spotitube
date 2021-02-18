@@ -12,7 +12,6 @@ import javax.ws.rs.NotAuthorizedException;
 public class LoginService implements ILoginService {
 
     @Inject
-    // protected want kan anders niet testen @Jailbreak werkte niet
     protected UserDAO userDAO = new UserDAO();
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
@@ -31,6 +30,6 @@ public class LoginService implements ILoginService {
     @Override
     public IUser getUser(String username){
         var user = userDAO.getUser(username);
-        return user.orElseThrow(() -> new NotAuthorizedException(401));
+        return user;
     }
 }

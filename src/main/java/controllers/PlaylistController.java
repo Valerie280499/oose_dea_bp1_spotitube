@@ -26,11 +26,11 @@ public class PlaylistController{
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createPlaylists(@QueryParam("token") String token){
+    public Response getAllPlaylists(@QueryParam("token") String token){
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
-        var playlistsDTO = playlistService.generatePlaylists();
+        var playlistsDTO = playlistService.getAllPlaylists();
 
         return Response.ok().entity(playlistsDTO).build();
     }
@@ -43,7 +43,7 @@ public class PlaylistController{
             return Response.status(401).build();
         }
 
-        var tracksDTO = trackService.getAllTracksInAPlaylist(playlist_id);
+        var tracksDTO = playlistService.getAllTracksInAPlaylist(playlist_id);
 
         return Response.ok().entity(tracksDTO).build();
     }
@@ -92,17 +92,13 @@ public class PlaylistController{
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response editPlaylist(@PathParam("id") int playlist_id, @QueryParam("token") String token, PlaylistDTO newPlaylist){
+    public Response editPlaylist(@QueryParam("token") String token, PlaylistDTO newPlaylist){
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
 
-        var playlistsDTO = playlistService.editPlayist(playlist_id, newPlaylist);
+        var playlistsDTO = playlistService.editPlaylist(newPlaylist);
 
         return Response.ok().entity(playlistsDTO).build();
     }
-
-
-
-
 }

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class TrackService implements ITrackService {
 
     @Inject
-    // protected want kan anders niet testen @Jailbreak werkte niet
     protected PlaylistsDTO playlistsDTO = new PlaylistsDTO();
     private TracksDTO tracksDTO = new TracksDTO();
 
@@ -24,24 +23,11 @@ public class TrackService implements ITrackService {
         tracks.add(new TrackDTO(3, "song3", "singer3", 25, "green album", 15, "06-06-2006", "undefined", false));
         tracks.add(new TrackDTO(4, "song4", "singer4", 125, "white album", 20, "09-09-2009", "best album ever", false));
         tracks.add(new TrackDTO(5, "song5", "singer5", 150, "yellow album", 25, "12-12-2012", "worst album ever", true));
+        tracks.add(new TrackDTO(6, "song6", "singer6", 35, "pink album", 6, "12-07-2015", "undefined", false));
 
         tracksDTO.setTracks(tracks);
         return tracksDTO;
     }
-
-    public TracksDTO getAllTracksInAPlaylist(int playlist_id) {
-        var playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);
-        var tracks = playlistDTO.getTracks();
-
-        tracksDTO.setTracks(tracks);
-        return tracksDTO;
-    }
-//        tracksDTO.setLength(2);
-//        ArrayList<TrackDTO> tracks = new ArrayList<>();
-//        tracks.add(new TrackDTO(6, "song6", "singer6", 35, "pink album", 6, "12-07-2015", "undefined", false));
-//        tracks.add(new TrackDTO(7, "song7", "singer7", 96, "brown album", 8, "03-07-2010", "undefined", false));
-//        tracksDTO.setTracks(tracks);
-
 
     public TracksDTO addTrackToPlaylist(int playlist_id, TrackDTO newTrack){
         var playlistDTO = playlistsDTO.getPlaylists().get(playlist_id);

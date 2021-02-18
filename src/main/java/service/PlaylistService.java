@@ -1,63 +1,50 @@
 package service;
 
+import datasource.DAO.PlaylistsDAO;
 import dto.PlaylistDTO;
 import dto.PlaylistsDTO;
+import dto.TracksDTO;
 import service.interfaces.IPlaylistService;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.ArrayList;
+import javax.ws.rs.NotAuthorizedException;
 
 @Singleton
 public class PlaylistService implements IPlaylistService {
 
     @Inject
-    // protected want kan anders niet testen @Jailbreak werkte niet
     protected PlaylistsDTO playlistsDTO = new PlaylistsDTO();
 
-    public PlaylistsDTO generatePlaylists() {
-        playlistsDTO.setLength(6);
+    @Inject
+    protected PlaylistsDAO playlistsDAO = new PlaylistsDAO();
 
-        ArrayList<PlaylistDTO> playlists = new ArrayList<>();
-        playlists.add(new PlaylistDTO(1, "sunday morning pop", true));
-        playlists.add(new PlaylistDTO(2, "new pop", true));
-        playlists.add(new PlaylistDTO(3, "love pop", true));
-        playlists.add(new PlaylistDTO(4, "sport rock", true));
-        playlists.add(new PlaylistDTO(5, "study rock", true));
-        playlists.add(new PlaylistDTO(6, "fun rock", true));
-
-        playlistsDTO.setPlaylists(playlists);
-        return playlistsDTO;
+    public PlaylistsDTO getAllPlaylists() {
+        var playlistsDTO = playlistsDAO.getAllPlaylists();
+        return playlistsDTO.orElseThrow(() -> new NotAuthorizedException(401));
     }
 
     public PlaylistsDTO deleteAPlaylist(int playlist_id) {
-        var playlists = playlistsDTO.getPlaylists();
-
-        playlists.removeIf(playlist -> playlist.getId() == playlist_id);
-
-        playlistsDTO.setPlaylists(playlists);
-        return playlistsDTO;
+        var playlistsDTO = playlistsDAO.deletePlaylist(playlist_id);
+        return playlistsDTO.orElseThrow(() -> new NotAuthorizedException(401));
     }
 
     public PlaylistsDTO addPlaylist(PlaylistDTO newPlaylist){
-        var playlists = playlistsDTO.getPlaylists();
-        playlists.add(new PlaylistDTO(newPlaylist.getId(), newPlaylist.getName(), false));
-
-        playlistsDTO.setPlaylists(playlists);
-        return playlistsDTO;
+        var playlistsDTO = playlistsDAO.addPlaylist(newPlaylist);
+        return playlistsDTO.orElseThrow(() -> new NotAuthorizedException(401));
     }
 
 
-    public PlaylistsDTO editPlayist(int playlist_id, PlaylistDTO newPlaylist) {
-        var playlists = playlistsDTO.getPlaylists();
-
-        playlists.removeIf(playlist -> playlist.getId() == playlist_id);
-        playlists.add(new PlaylistDTO(newPlaylist.getId(), newPlaylist.getName(), false));
-
-        playlistsDTO.setPlaylists(playlists);
-        return playlistsDTO;
-
+    public PlaylistsDTO editPlaylist(PlaylistDTO newPlaylist) {
+        var playlistsDTO = playlistsDAO.editPlaylist(newPlaylist);
+        return playlistsDTO.orElseThrow(() -> new NotAuthorizedException(401));
     }
+
+    public TracksDTO getAllTracksInAPlaylist(int playlist_id) {
+        var tracksDTO = playlistsDAO.getTracksFromPlaylist(playlist_id);
+        return tracksDTO;
+    }
+
 }
 
 

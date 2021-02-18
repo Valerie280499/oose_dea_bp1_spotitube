@@ -44,7 +44,7 @@ class UserDAOTest {
 
         var foundUser = sut.getUser("Valerie");
 
-        Assertions.assertEquals("Valerie", foundUser.get().getUsername());
+        Assertions.assertEquals("Valerie", foundUser.getUsername());
     }
 
     @Test
@@ -62,7 +62,7 @@ class UserDAOTest {
         sut.setJDBCConnection(fakeJDBCConnection);
 
         try {
-            userList = sut.getUserFromDB(fakeStatement);
+            userList = sut.executeQuery(fakeStatement);
         } catch (SQLException e) { e.printStackTrace(); }
 
         Assertions.assertEquals("Valerie", userList.get(0).getUsername());

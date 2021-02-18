@@ -2,17 +2,18 @@ package datasource.DAO;
 
 import datasource.connection.JDBCConnection;
 import datasource.DAO.interfaces.IUserDAO;
+import datasource.errors.UserNotFoundError;
+import datasource.errors.someSQLError;
 import domain.User;
 import domain.interfaces.IUser;
 
 import javax.inject.Inject;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class UserDAO implements IUserDAO {
+    public static final String QUERY = "SELECT * FROM login WHERE username = ?";
     private JDBCConnection JDBCConnection;
 
     @Inject
@@ -21,26 +22,26 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public Optional<IUser> getUser(String username) {
+    public IUser getUser(String username) {
         try{
             var conn = JDBCConnection.createConnection();
-            var statement =  conn.prepareStatement("SELECT * FROM login WHERE username = ?");
+            var statement =  conn.prepareStatement(QUERY);
 
             statement.setString(1, username);
-            var foundUser = getUserFromDB(statement);
+            var foundUser = executeQuery(statement);
 
             if (foundUser.isEmpty()) {
-                return Optional.empty();
+                throw new UserNotFoundError();
             } else {
-                return Optional.of(foundUser.get(0));
+                return foundUser.get(0);
             }
 
         } catch(SQLException e){
-            return Optional.empty();
+            throw new someSQLError();
         }
     }
 
-    public ArrayList<IUser> getUserFromDB(PreparedStatement statement) throws SQLException{
+    public ArrayList<IUser> executeQuery(PreparedStatement statement) throws SQLException{
         var userList = new ArrayList<IUser>();
         var resultSet = statement.executeQuery();
         resultSet.next();

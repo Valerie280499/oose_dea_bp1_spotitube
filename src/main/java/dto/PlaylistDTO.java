@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class PlaylistDTO {
     private int id;
     private String name;
-    private boolean owner;
-    private ArrayList<TrackDTO> tracks;
+    private String owner;
 
-    public PlaylistDTO(int id, String name, boolean owner) {
+    private ArrayList<TrackDTO> tracks;
+    public PlaylistDTO(int id, String name, String owner) {
         this.id = id;
         this.name = name;
         this.owner = owner;
@@ -33,11 +33,11 @@ public class PlaylistDTO {
         this.name = name;
     }
 
-    public boolean isOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(boolean owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 

@@ -1,11 +1,16 @@
 package service;
 
+import datasource.DAO.PlaylistsDAO;
+import datasource.connection.JDBCConnection;
 import dto.PlaylistDTO;
 import dto.PlaylistsDTO;
+import dto.TrackDTO;
+import dto.TracksDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import static org.mockito.Mockito.mock;
@@ -13,19 +18,43 @@ import static org.mockito.Mockito.when;
 
 class PlaylistServiceTest {
     private PlaylistsDTO fakePlaylistsDTO;
+    private PlaylistsDAO fakePlaylistsDAO;
     private PlaylistService sut;
 
     @BeforeEach
     void setUp(){
-
-        ArrayList<PlaylistDTO> fakePlaylists = new ArrayList<>();
-        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", false));
-        fakePlaylists.add(new PlaylistDTO(2, "monday morning", false));
-
-        fakePlaylistsDTO = mock(PlaylistsDTO.class);
-        when(fakePlaylistsDTO.getPlaylists()).thenReturn(fakePlaylists);
-
+        var jdbcConnection = new JDBCConnection();
+        fakePlaylistsDAO = new PlaylistsDAO();
         sut = new PlaylistService();
+
+        try {
+            var fakeConn = jdbcConnection.createConnection();
+            var fakeJDBCConnection = mock(JDBCConnection.class);
+            when(fakeJDBCConnection.createConnection()).thenReturn(fakeConn);
+
+            ArrayList<TrackDTO> tracks = new ArrayList<>();
+            tracks.add(new TrackDTO(1, "test title", "test performer", 10, "test album", 5, "01-01-2001", "test description", true ));
+            tracks.add(new TrackDTO(2, "test title", "test performer", 10, "test album", 5, "01-01-2001", "test description", true ));
+
+            var fakeTracksDTO = new TracksDTO();
+            fakeTracksDTO.setTracks(tracks);
+
+            fakePlaylistsDAO.setJDBCConnection(fakeJDBCConnection);
+            fakePlaylistsDAO = mock(PlaylistsDAO.class);
+            when(fakePlaylistsDAO.getTracksFromPlaylist(1)).thenReturn(fakeTracksDTO);
+
+
+
+            ArrayList<PlaylistDTO> fakePlaylists = new ArrayList<>();
+            fakePlaylists.add(new PlaylistDTO(1, "sunday morning", "Valerie"));
+            fakePlaylists.add(new PlaylistDTO(2, "monday morning", "Valerie"));
+
+            fakePlaylistsDTO = mock(PlaylistsDTO.class);
+            when(fakePlaylistsDTO.getPlaylists()).thenReturn(fakePlaylists);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Test
@@ -49,7 +78,7 @@ class PlaylistServiceTest {
     void addPlaylistTest(){
         sut.playlistsDTO = fakePlaylistsDTO;
 
-        var responsePlaylistsDTO = sut.addPlaylist(new PlaylistDTO(3, "friday morning", false));
+        var responsePlaylistsDTO = sut.addPlaylist(new PlaylistDTO(3, "friday morning", "Valerie"));
 
         Assertions.assertEquals(3, responsePlaylistsDTO.getPlaylists().size());
 
@@ -59,9 +88,18 @@ class PlaylistServiceTest {
     void editPlaylistTest(){
         sut.playlistsDTO = fakePlaylistsDTO;
 
-        var responsePlaylistsDTO = sut.editPlayist(2, new PlaylistDTO(3, "friday morning", false));
+        var responsePlaylistsDTO = sut.editPlaylist(new PlaylistDTO(3, "friday morning", "Valerie"));
 
         Assertions.assertEquals(3, responsePlaylistsDTO.getPlaylists().get(1).getId());
 
+    }
+
+    @Test
+    void getAllTracksInAPlaylistTest() {
+        sut.playlistsDAO = fakePlaylistsDAO;
+
+        var responseTracksDTO = sut.getAllTracksInAPlaylist(1);
+
+        Assertions.assertEquals(2, responseTracksDTO.getTracks().size());
     }
 }
