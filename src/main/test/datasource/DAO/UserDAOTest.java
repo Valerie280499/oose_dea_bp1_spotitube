@@ -27,7 +27,7 @@ class UserDAOTest {
         try {
             jdbcConnection = new JDBCConnection();
             fakeConn = jdbcConnection.createConnection();
-            fakeStatement =  fakeConn.prepareStatement("SELECT * FROM user WHERE username = 'valerie'");
+            fakeStatement =  fakeConn.prepareStatement("SELECT * FROM login WHERE username = 'valerie'");
         } catch (SQLException e) { e.printStackTrace(); }
 
         try {
@@ -42,9 +42,9 @@ class UserDAOTest {
     void getExistingUserFromDatabaseTest() {
         sut.setJDBCConnection(fakeJDBCConnection);
 
-        var foundUser = sut.getUser("valerie");
+        var foundUser = sut.getUser("Valerie");
 
-        Assertions.assertEquals("valerie", foundUser.get().getUsername());
+        Assertions.assertEquals("Valerie", foundUser.get().getUsername());
     }
 
     @Test
@@ -65,7 +65,7 @@ class UserDAOTest {
             userList = sut.getUserFromDB(fakeStatement);
         } catch (SQLException e) { e.printStackTrace(); }
 
-        Assertions.assertEquals("valerie", userList.get(0).getUsername());
+        Assertions.assertEquals("Valerie", userList.get(0).getUsername());
 
     }
 

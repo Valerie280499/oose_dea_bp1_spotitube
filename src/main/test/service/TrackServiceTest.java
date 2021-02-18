@@ -19,8 +19,8 @@ class TrackServiceTest {
     @BeforeEach
     void setUp(){
         ArrayList<PlaylistDTO> fakePlaylists = new ArrayList<>();
-        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", false));
-        fakePlaylists.add(new PlaylistDTO(2, "monday morning", false));
+        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", "Valerie"));
+        fakePlaylists.add(new PlaylistDTO(2, "monday morning", "Valerie"));
 
         ArrayList<TrackDTO> fakeTracks = new ArrayList<>();
         fakeTracks.add(new TrackDTO(1, "song1", "singer1", 100, "red album", 5,

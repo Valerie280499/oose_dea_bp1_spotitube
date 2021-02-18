@@ -19,8 +19,8 @@ class PlaylistServiceTest {
     void setUp(){
 
         ArrayList<PlaylistDTO> fakePlaylists = new ArrayList<>();
-        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", false));
-        fakePlaylists.add(new PlaylistDTO(2, "monday morning", false));
+        fakePlaylists.add(new PlaylistDTO(1, "sunday morning", "Valerie"));
+        fakePlaylists.add(new PlaylistDTO(2, "monday morning", "Valerie"));
 
         fakePlaylistsDTO = mock(PlaylistsDTO.class);
         when(fakePlaylistsDTO.getPlaylists()).thenReturn(fakePlaylists);
@@ -49,7 +49,7 @@ class PlaylistServiceTest {
     void addPlaylistTest(){
         sut.playlistsDTO = fakePlaylistsDTO;
 
-        var responsePlaylistsDTO = sut.addPlaylist(new PlaylistDTO(3, "friday morning", false));
+        var responsePlaylistsDTO = sut.addPlaylist(new PlaylistDTO(3, "friday morning", "Valerie"));
 
         Assertions.assertEquals(3, responsePlaylistsDTO.getPlaylists().size());
 
@@ -59,7 +59,7 @@ class PlaylistServiceTest {
     void editPlaylistTest(){
         sut.playlistsDTO = fakePlaylistsDTO;
 
-        var responsePlaylistsDTO = sut.editPlayist(2, new PlaylistDTO(3, "friday morning", false));
+        var responsePlaylistsDTO = sut.editPlayist(2, new PlaylistDTO(3, "friday morning", "Valerie"));
 
         Assertions.assertEquals(3, responsePlaylistsDTO.getPlaylists().get(1).getId());
 

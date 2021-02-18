@@ -24,9 +24,9 @@ class PlaylistControllerTest {
         fakePlaylistsDTO.setLength(3);
 
         fakePlaylists = new ArrayList<>();
-        fakePlaylists.add(new PlaylistDTO(1, "country", true));
-        fakePlaylists.add(new PlaylistDTO(2, "country rock", true));
-        fakePlaylists.add(new PlaylistDTO(3, "love country", true));
+        fakePlaylists.add(new PlaylistDTO(1, "country", "Valerie"));
+        fakePlaylists.add(new PlaylistDTO(2, "country rock", "Valerie"));
+        fakePlaylists.add(new PlaylistDTO(3, "love country", "Valerie"));
         fakePlaylistsDTO.setPlaylists(fakePlaylists);
 
         fakeService = mock(PlaylistService.class);

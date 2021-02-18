@@ -32,10 +32,10 @@ class LoginServiceTest {
             when(fakeJDBCConnection.createConnection()).thenReturn(fakeConn);
 
             userDAO.setJDBCConnection(fakeJDBCConnection);
-            var fakeUser = userDAO.getUser("valerie");
+            var fakeUser = userDAO.getUser("Valerie");
 
             fakeUserDAO = mock(UserDAO.class);
-            when(fakeUserDAO.getUser("valerie")).thenReturn(fakeUser);
+            when(fakeUserDAO.getUser("Valerie")).thenReturn(fakeUser);
 
         } catch (SQLException e) { e.printStackTrace(); }
 
@@ -45,8 +45,8 @@ class LoginServiceTest {
     void testCorrectLoginRequest(){
         sut.userDAO = fakeUserDAO;
 
-        loginRequestDTO.setUser("valerie");
-        loginRequestDTO.setPassword("valerie");
+        loginRequestDTO.setUser("Valerie");
+        loginRequestDTO.setPassword("blaat");
         var loginRequest = sut.login(loginRequestDTO);
 
         Assertions.assertEquals("Hello", loginRequest.getToken());

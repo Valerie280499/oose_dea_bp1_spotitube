@@ -19,12 +19,12 @@ public class PlaylistService implements IPlaylistService {
         playlistsDTO.setLength(6);
 
         ArrayList<PlaylistDTO> playlists = new ArrayList<>();
-        playlists.add(new PlaylistDTO(1, "sunday morning pop", true));
-        playlists.add(new PlaylistDTO(2, "new pop", true));
-        playlists.add(new PlaylistDTO(3, "love pop", true));
-        playlists.add(new PlaylistDTO(4, "sport rock", true));
-        playlists.add(new PlaylistDTO(5, "study rock", true));
-        playlists.add(new PlaylistDTO(6, "fun rock", true));
+        playlists.add(new PlaylistDTO(1, "sunday morning pop", "Valerie"));
+        playlists.add(new PlaylistDTO(2, "new pop", "Valerie"));
+        playlists.add(new PlaylistDTO(3, "love pop", "Richane"));
+        playlists.add(new PlaylistDTO(4, "sport rock", "Richane"));
+        playlists.add(new PlaylistDTO(5, "study rock", "Lauren"));
+        playlists.add(new PlaylistDTO(6, "fun rock", "Lauren"));
 
         playlistsDTO.setPlaylists(playlists);
         return playlistsDTO;
@@ -41,7 +41,7 @@ public class PlaylistService implements IPlaylistService {
 
     public PlaylistsDTO addPlaylist(PlaylistDTO newPlaylist){
         var playlists = playlistsDTO.getPlaylists();
-        playlists.add(new PlaylistDTO(newPlaylist.getId(), newPlaylist.getName(), false));
+        playlists.add(new PlaylistDTO(newPlaylist.getId(), newPlaylist.getName(), "Valerie"));
 
         playlistsDTO.setPlaylists(playlists);
         return playlistsDTO;
@@ -52,7 +52,7 @@ public class PlaylistService implements IPlaylistService {
         var playlists = playlistsDTO.getPlaylists();
 
         playlists.removeIf(playlist -> playlist.getId() == playlist_id);
-        playlists.add(new PlaylistDTO(newPlaylist.getId(), newPlaylist.getName(), false));
+        playlists.add(new PlaylistDTO(newPlaylist.getId(), newPlaylist.getName(), "Valerie"));
 
         playlistsDTO.setPlaylists(playlists);
         return playlistsDTO;
