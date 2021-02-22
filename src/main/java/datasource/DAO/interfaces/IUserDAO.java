@@ -1,7 +1,7 @@
 package datasource.DAO.interfaces;
 
-import domain.interfaces.IUser;
+import dto.interfaces.IUserDTO;
 
 public interface IUserDAO {
-    IUser getUser(String username);
+    IUserDTO getUser(String username);
 }

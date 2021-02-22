@@ -7,21 +7,9 @@ public class TrackDTO {
     private int duration;
     private String album;
     private int playcount;
-    private String publicatationDate;
+    private String publicationDate;
     private String description;
-    private Boolean offlineAvailable;
-
-    public TrackDTO(int id, String title, String performer, int duration, String album, int playcount, String publicatationDate, String description, Boolean offlineAvailable) {
-        this.id = id;
-        this.title = title;
-        this.performer = performer;
-        this.duration = duration;
-        this.album = album;
-        this.playcount = playcount;
-        this.publicatationDate = publicatationDate;
-        this.description = description;
-        this.offlineAvailable = offlineAvailable;
-    }
+    private boolean offlineAvailable;
 
     public int getId() {
         return id;
@@ -72,11 +60,11 @@ public class TrackDTO {
     }
 
     public String getPublicatationDate() {
-        return publicatationDate;
+        return publicationDate;
     }
 
     public void setPublicatationDate(String publicatationDate) {
-        this.publicatationDate = publicatationDate;
+        this.publicationDate = publicatationDate;
     }
 
     public String getDescription() {

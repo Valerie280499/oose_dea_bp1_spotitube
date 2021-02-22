@@ -4,8 +4,8 @@ import datasource.connection.JDBCConnection;
 import datasource.DAO.interfaces.IUserDAO;
 import datasource.errors.UserNotFoundError;
 import datasource.errors.someSQLError;
-import domain.User;
-import domain.interfaces.IUser;
+import dto.UserDTO;
+import dto.interfaces.IUserDTO;
 
 import javax.inject.Inject;
 import java.sql.PreparedStatement;
@@ -22,7 +22,7 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public IUser getUser(String username) {
+    public IUserDTO getUser(String username) {
         try{
             var conn = JDBCConnection.createConnection();
             var statement =  conn.prepareStatement(QUERY);
@@ -41,11 +41,11 @@ public class UserDAO implements IUserDAO {
         }
     }
 
-    public ArrayList<IUser> executeQuery(PreparedStatement statement) throws SQLException{
-        var userList = new ArrayList<IUser>();
+    public ArrayList<IUserDTO> executeQuery(PreparedStatement statement) throws SQLException{
+        var userList = new ArrayList<IUserDTO>();
         var resultSet = statement.executeQuery();
         resultSet.next();
-        var user = new User(resultSet.getString("username"), resultSet.getString("password"), resultSet.getByte("token"));
+        var user = new UserDTO(resultSet.getString("username"), resultSet.getString("password"), resultSet.getByte("token"));
         userList.add(user);
         return userList;
     }

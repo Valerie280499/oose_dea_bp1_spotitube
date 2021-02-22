@@ -1,4 +1,4 @@
-package service;
+package services;
 
 import dto.LoginRequestDTO;
 import datasource.connection.JDBCConnection;

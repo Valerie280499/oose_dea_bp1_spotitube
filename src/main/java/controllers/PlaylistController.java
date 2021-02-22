@@ -1,9 +1,8 @@
 package controllers;
 
+import datasource.DAO.PlaylistDAO;
 import dto.PlaylistDTO;
 import dto.TrackDTO;
-import service.PlaylistService;
-import service.TrackService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -12,17 +11,10 @@ import javax.ws.rs.core.Response;
 
 @Path("/playlists")
 public class PlaylistController{
-    private PlaylistService playlistService;
-    private TrackService trackService;
+    private static final String SELECT_TRACKS_FROM_PLAYLIST = "SELECT T.* FROM track T INNER JOIN playlistTracks P ON T.id = P.idTrack WHERE P.idPlaylist = ?";
 
     @Inject
-    public void setPlaylistService(PlaylistService playlistService){
-        this.playlistService = playlistService;
-    }
-
-    @Inject
-    public void setTrackService(TrackService trackService){ this.trackService = trackService;}
-
+    protected PlaylistDAO playlistDAO = new PlaylistDAO();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -30,7 +22,7 @@ public class PlaylistController{
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
-        var playlistsDTO = playlistService.getAllPlaylists();
+        var playlistsDTO = playlistDAO.getAllPlaylists();
 
         return Response.ok().entity(playlistsDTO).build();
     }
@@ -42,8 +34,7 @@ public class PlaylistController{
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
-
-        var tracksDTO = playlistService.getAllTracksInAPlaylist(playlist_id);
+        var tracksDTO = playlistDAO.getTracks(playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
 
         return Response.ok().entity(tracksDTO).build();
     }
@@ -56,7 +47,7 @@ public class PlaylistController{
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
-        var playlistsDTO = playlistService.addPlaylist(newPlaylist);
+        var playlistsDTO = playlistDAO.addPlaylist(newPlaylist);
 
         return Response.ok().entity(playlistsDTO).build();
     }
@@ -69,7 +60,9 @@ public class PlaylistController{
         if (!token.equals("Hallo")){
             return Response.status(401).build();
         }
-        var tracksDTO = trackService.addTrackToPlaylist(playlist_id, newTrack);
+
+        playlistDAO.addTrackToPlaylist(playlist_id, newTrack);
+        var tracksDTO = playlistDAO.getTracks(playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
 
         return Response.ok().entity(tracksDTO).build();
     }
@@ -81,8 +74,7 @@ public class PlaylistController{
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
-
-        var playlistsDTO = playlistService.deleteAPlaylist(playlist_id);
+        var playlistsDTO = playlistDAO.deletePlaylist(playlist_id);
 
         return Response.ok().entity(playlistsDTO).build();
 
@@ -96,9 +88,22 @@ public class PlaylistController{
         if (!token.equals("Hello")){
             return Response.status(401).build();
         }
-
-        var playlistsDTO = playlistService.editPlaylist(newPlaylist);
+        var playlistsDTO = playlistDAO.editPlaylist(newPlaylist);
 
         return Response.ok().entity(playlistsDTO).build();
+    }
+
+    @DELETE
+    @Path("/{id}/tracks/{track_id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteTrackFromPlaylist(@PathParam("id") int playlist_id, @PathParam("track_id") int track_id, @QueryParam("token") String token){
+        if (!token.equals("Hello")){
+            return Response.status(401).build();
+        }
+
+        playlistDAO.deleteTrackFromPlaylist(playlist_id, track_id);
+        var tracksDTO = playlistDAO.getTracks(playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
+
+        return Response.ok().entity(tracksDTO).build();
     }
 }

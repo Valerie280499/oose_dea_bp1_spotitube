@@ -1,15 +1,14 @@
-package service;
+package services;
 
 import dto.LoginRequestDTO;
 import dto.LoginResponseDTO;
 import datasource.DAO.UserDAO;
-import domain.interfaces.IUser;
-import service.interfaces.ILoginService;
+import dto.interfaces.IUserDTO;
 
 import javax.inject.Inject;
 import javax.ws.rs.NotAuthorizedException;
 
-public class LoginService implements ILoginService {
+public class LoginService {
 
     @Inject
     protected UserDAO userDAO = new UserDAO();
@@ -27,8 +26,7 @@ public class LoginService implements ILoginService {
         throw new NotAuthorizedException(401);
     }
 
-    @Override
-    public IUser getUser(String username){
+    public IUserDTO getUser(String username){
         var user = userDAO.getUser(username);
         return user;
     }

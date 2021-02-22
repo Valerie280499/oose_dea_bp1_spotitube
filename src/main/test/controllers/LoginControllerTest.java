@@ -2,11 +2,10 @@ package controllers;
 
 import dto.LoginRequestDTO;
 import dto.LoginResponseDTO;
-import controllers.LoginController;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import service.LoginService;
+import services.LoginService;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

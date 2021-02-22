@@ -1,7 +1,7 @@
 package controllers;
 
 import dto.LoginRequestDTO;
-import service.LoginService;
+import services.LoginService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;

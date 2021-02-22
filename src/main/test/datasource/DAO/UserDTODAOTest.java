@@ -2,7 +2,7 @@ package datasource.DAO;
 
 import com.mysql.jdbc.JDBC4Connection;
 import datasource.connection.JDBCConnection;
-import domain.interfaces.IUser;
+import dto.interfaces.IUserDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class UserDAOTest {
+class UserDTODAOTest {
     private JDBCConnection jdbcConnection;
     private JDBCConnection fakeJDBCConnection;
     private JDBC4Connection fakeConn;
@@ -58,7 +58,7 @@ class UserDAOTest {
 
     @Test
     void getUserFromDBTest(){
-        ArrayList<IUser> userList = new ArrayList<>();
+        ArrayList<IUserDTO> userList = new ArrayList<>();
         sut.setJDBCConnection(fakeJDBCConnection);
 
         try {

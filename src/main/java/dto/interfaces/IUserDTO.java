@@ -1,6 +1,6 @@
-package domain.interfaces;
+package dto.interfaces;
 
-public interface IUser {
+public interface IUserDTO {
     String getUsername();
     String getPassword();
     void setPassword(String password);

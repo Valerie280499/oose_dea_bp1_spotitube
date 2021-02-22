@@ -1,13 +1,13 @@
-package domain;
+package dto;
 
-import domain.interfaces.IUser;
+import dto.interfaces.IUserDTO;
 
-public class User implements IUser {
+public class UserDTO implements IUserDTO {
     private String username;
     private String password;
     private int token;
 
-    public User(String username, String password, int token) {
+    public UserDTO(String username, String password, int token) {
         this.username = username;
         this.password = password;
         this.token = token;
