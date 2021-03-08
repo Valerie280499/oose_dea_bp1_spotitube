@@ -3,9 +3,12 @@ package controllers;
 
 import datasource.DAO.PlaylistDAO;
 import javax.inject.Inject;
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/tracks")
@@ -16,12 +19,9 @@ public class TrackController {
     protected PlaylistDAO playlistDAO = new PlaylistDAO();
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getAllTracks(@QueryParam("token") String token, @QueryParam("forPlaylist") int playlist_id){
-        if (!token.equals("Hello")){
-            return Response.status(401).build();
-        }
-
-        var tracksDTO = playlistDAO.getTracks(playlist_id, SELECT_TRACKS_FROM_TRACK);
+        var tracksDTO = playlistDAO.getTracks(token, playlist_id, SELECT_TRACKS_FROM_TRACK);
         return Response.ok().entity(tracksDTO).build();
     }
 }
