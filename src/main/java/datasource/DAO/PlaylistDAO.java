@@ -1,5 +1,6 @@
 package datasource.DAO;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import datasource.connection.JDBCConnection;
 import datasource.errors.PlayListNotFoundError;
 import datasource.errors.someSQLError;
@@ -11,7 +12,6 @@ import dto.TracksDTO;
 import javax.inject.Inject;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Optional;
 
 public class PlaylistDAO {
     private static final String SELECT_FROM_PLAYLIST = "SELECT * FROM playlist";
@@ -78,6 +78,10 @@ public class PlaylistDAO {
             statement.setString(2, newPlaylist.getName());
             statement.setBoolean(3, newPlaylist.getOwner());
             statement.execute();
+        } catch (MySQLIntegrityConstraintViolationException error){
+            var id = newPlaylist.getId();
+            newPlaylist.setId(++id);
+            addPlaylist(token, newPlaylist);
         } catch (SQLException error) {
             throw new someSQLError(error);
         }
@@ -99,7 +103,7 @@ public class PlaylistDAO {
         return getAllPlaylists(token);
     }
 
-    public Optional<TracksDTO> getTracks(String token, int playlist_id, String query) {
+    public TracksDTO getTracks(String token, int playlist_id, String query) {
         userDAO.getUserByToken(token);
 
         var tracks = new ArrayList<TrackDTO>();
@@ -125,14 +129,17 @@ public class PlaylistDAO {
         } catch (SQLException error){
             throw new someSQLError(error);
         }
+        var tracksDTO = new TracksDTO();
+        tracksDTO.setTracks(tracks);
+        return tracksDTO;
 
-        if (tracks.isEmpty()){
-            return Optional.empty();
-        } else {
-            var tracksDTO = new TracksDTO();
-            tracksDTO.setTracks(tracks);
-            return Optional.of(tracksDTO);
-        }
+//        if (tracks.isEmpty()){
+//            return Optional.empty();
+//        } else {
+//            var tracksDTO = new TracksDTO();
+//            tracksDTO.setTracks(tracks);
+//            return Optional.of(tracksDTO);
+//        }
     }
 
     public void addTrackToPlaylist(int playlist_id, TrackDTO newTrack){

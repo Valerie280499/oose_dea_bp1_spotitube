@@ -12,9 +12,12 @@ import javax.ws.rs.core.Response;
 @Path("/playlists")
 public class PlaylistController{
     private static final String SELECT_TRACKS_FROM_PLAYLIST = "SELECT T.* FROM track T INNER JOIN playlistTracks P ON T.id = P.idTrack WHERE P.idPlaylist = ?";
+    private PlaylistDAO playlistDAO;
 
     @Inject
-    protected PlaylistDAO playlistDAO = new PlaylistDAO();
+    public void setPlaylistDAO(PlaylistDAO playlistDAO){
+        this.playlistDAO = playlistDAO;
+    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -32,7 +35,6 @@ public class PlaylistController{
 
         return Response.ok().entity(tracksDTO).build();
     }
-
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

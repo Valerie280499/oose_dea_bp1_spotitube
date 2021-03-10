@@ -75,11 +75,11 @@ public class TrackDTO {
         this.description = description;
     }
 
-    public Boolean getOfflineAvailable() {
+    public boolean getOfflineAvailable() {
         return offlineAvailable;
     }
 
-    public void setOfflineAvailable(Boolean offlineAvailable) {
+    public void setOfflineAvailable(boolean offlineAvailable) {
         this.offlineAvailable = offlineAvailable;
     }
 }

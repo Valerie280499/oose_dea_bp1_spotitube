@@ -32,3 +32,7 @@ public class LoginController {
 }
 
 // https://jenkins.aimsites.nl/spotitube/
+
+// total count in the left botum corner
+// publication date
+// new playlist cannot be edited
