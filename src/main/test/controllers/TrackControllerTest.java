@@ -1,6 +1,7 @@
 package controllers;
 
-import datasource.DAO.PlaylistDAO;
+import datasource.dao.PlaylistDAO;
+import datasource.dao.TrackDAO;
 import dto.TrackDTO;
 import dto.TracksDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 class TrackControllerTest {
     private TrackController sut;
-    private PlaylistDAO mockedPlaylistDAO;
+    private TrackDAO mockedTrackDAO;
     private static final String TOKEN = "hello";
     private static final String QUERY = "SELECT T.* FROM track T where id not in (select P.idTrack FROM playlistTracks P WHERE P.idPlaylist = ?)";
 
@@ -39,16 +40,16 @@ class TrackControllerTest {
         var tracksDTO = new TracksDTO();
         tracksDTO.setTracks(tracks);
 
-        mockedPlaylistDAO = mock(PlaylistDAO.class);
-        when(mockedPlaylistDAO.getTracks(TOKEN, 2, QUERY)).thenReturn(tracksDTO);
-        sut.setPlaylistDAO(mockedPlaylistDAO);
+        mockedTrackDAO = mock(TrackDAO.class);
+        when(mockedTrackDAO.getTracksWhichAreNotInAPlaylist(TOKEN, 2)).thenReturn(tracksDTO);
+        sut.setTrackDAO(mockedTrackDAO);
 
     }
 
     @Test
     void getAllTracksVerifyTest() {
         sut.getAllTracks(TOKEN, 2);
-        verify(mockedPlaylistDAO).getTracks(TOKEN, 2, QUERY);
+        verify(mockedTrackDAO).getTracksWhichAreNotInAPlaylist(TOKEN, 2);
     }
 
     @Test

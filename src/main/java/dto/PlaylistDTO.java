@@ -6,8 +6,8 @@ public class PlaylistDTO {
     private int id;
     private String name;
     private Boolean owner;
-
     private ArrayList<TrackDTO> tracks;
+
     public PlaylistDTO(int id, String name, Boolean owner) {
         this.id = id;
         this.name = name;

@@ -1,6 +1,6 @@
 package controllers;
 
-import datasource.DAO.PlaylistDAO;
+import datasource.dao.PlaylistDAO;
 import dto.PlaylistDTO;
 import dto.TrackDTO;
 
@@ -11,7 +11,6 @@ import javax.ws.rs.core.Response;
 
 @Path("/playlists")
 public class PlaylistController{
-    private static final String SELECT_TRACKS_FROM_PLAYLIST = "SELECT T.* FROM track T INNER JOIN playlistTracks P ON T.id = P.idTrack WHERE P.idPlaylist = ?";
     private PlaylistDAO playlistDAO;
 
     @Inject
@@ -31,7 +30,7 @@ public class PlaylistController{
     @Path("/{id}/tracks")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllTracksInAPlaylist(@PathParam("id") int playlist_id, @QueryParam("token") String token){
-        var tracksDTO = playlistDAO.getTracks(token, playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
+        var tracksDTO = playlistDAO.getTracksInPlaylist(token, playlist_id);
 
         return Response.ok().entity(tracksDTO).build();
     }
@@ -51,7 +50,7 @@ public class PlaylistController{
     @Produces(MediaType.APPLICATION_JSON)
     public Response addTrackToPlaylist(@PathParam("id") int playlist_id, @QueryParam("token") String token, TrackDTO newTrack){
         playlistDAO.addTrackToPlaylist(playlist_id, newTrack);
-        var tracksDTO = playlistDAO.getTracks(token, playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
+        var tracksDTO = playlistDAO.getTracksInPlaylist(token, playlist_id);
 
         return Response.ok().entity(tracksDTO).build();
     }
@@ -80,8 +79,8 @@ public class PlaylistController{
     @Path("/{id}/tracks/{track_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteTrackFromPlaylist(@PathParam("id") int playlist_id, @PathParam("track_id") int track_id, @QueryParam("token") String token){
-        playlistDAO.deleteTrackFromPlaylist(playlist_id, track_id);
-        var tracksDTO = playlistDAO.getTracks(token, playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
+        playlistDAO.deleteTrackFromPlaylist(track_id);
+        var tracksDTO = playlistDAO.getTracksInPlaylist(token, playlist_id);
 
         return Response.ok().entity(tracksDTO).build();
     }

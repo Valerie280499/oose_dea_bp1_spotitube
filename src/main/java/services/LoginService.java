@@ -3,7 +3,7 @@ package services;
 import datasource.errors.IncorrectLoginError;
 import dto.LoginRequestDTO;
 import dto.LoginResponseDTO;
-import datasource.DAO.UserDAO;
+import datasource.dao.UserDAO;
 import dto.UserDTO;
 import javax.inject.Inject;
 

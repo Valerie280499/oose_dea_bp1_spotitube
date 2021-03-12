@@ -1,4 +1,4 @@
-package datasource.DAO;
+package datasource.dao;
 
 import datasource.connection.JDBCConnection;
 import datasource.errors.UserNotFoundError;

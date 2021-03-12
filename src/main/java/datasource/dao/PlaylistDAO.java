@@ -1,13 +1,15 @@
-package datasource.DAO;
+package datasource.dao;
 
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import datasource.connection.JDBCConnection;
 import datasource.errors.PlayListNotFoundError;
 import datasource.errors.someSQLError;
+import datasource.resultsetMappers.MapResultsetToPlaylistDTO;
 import dto.PlaylistDTO;
 import dto.PlaylistsDTO;
 import dto.TrackDTO;
 import dto.TracksDTO;
+import services.PlaylistService;
 
 import javax.inject.Inject;
 import java.sql.SQLException;
@@ -15,33 +17,46 @@ import java.util.ArrayList;
 
 public class PlaylistDAO {
     private static final String SELECT_FROM_PLAYLIST = "SELECT * FROM playlist";
+    private static final String SELECT_TRACKS_FROM_PLAYLIST = "SELECT T.* FROM track T INNER JOIN playlistTracks P ON T.id = P.idTrack WHERE P.idPlaylist = ?";
     private static final String DELETE_PLAYLIST = "DELETE FROM playlist WHERE id = ?";
     private static final String DELETE_TRACK_FROM_PLAYLIST = "DELETE FROM playlistTracks WHERE idTrack = ?";
     private static final String INSERT_INTO_PLAYLIST = "INSERT INTO playlist (id, name, owner, length) VALUES (?, ?, ?, NULL)";
     private static final String INSERT_NEW_TRACK_INTO_PLAYLIST = "INSERT INTO playlistTracks (idPlaylist, idTrack, offlineAvailable) VALUES (?, ?, ?)";
     private static final String UPDATE_PLAYLIST_NAME = "UPDATE playlist SET name = ? WHERE id = ?";
-    protected JDBCConnection JDBCConnection;
-    protected UserDAO userDAO;
 
-    @Inject
-    public void setJDBCConnection(JDBCConnection JDBCConnection){this.JDBCConnection = JDBCConnection;}
+    private JDBCConnection JDBCConnection;
+    private UserDAO userDAO;
+    private PlaylistService playlistService;
+    private MapResultsetToPlaylistDTO mapResultsetToPlaylistDTO;
+    private TrackDAOService trackDAOService;
 
-    @Inject
-    public void setUserDAO(UserDAO userDAO){
+    @Inject public void setJDBCConnection(JDBCConnection JDBCConnection){this.JDBCConnection = JDBCConnection;}
+
+    @Inject public void setPlaylistService(PlaylistService playlistService){this.playlistService = playlistService;}
+
+    @Inject public void setUserDAO(UserDAO userDAO){
         this.userDAO = userDAO;
     }
+
+    @Inject public void setMapResultsetToPlaylistDTO(MapResultsetToPlaylistDTO mapResultsetToPlaylistDTO){ this.mapResultsetToPlaylistDTO = mapResultsetToPlaylistDTO;}
+
+    @Inject public void setTrackService(TrackDAOService trackDAOService) { this.trackDAOService = trackDAOService;}
 
     public PlaylistsDTO getAllPlaylists(String token){
         userDAO.getUserByToken(token);
 
         ArrayList<PlaylistDTO> playlists = new ArrayList<>();
+        var length = 0;
         try {
             var conn = JDBCConnection.createConnection();
             var statement = conn.prepareStatement(SELECT_FROM_PLAYLIST);
             var resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                playlists.add(new PlaylistDTO(resultSet.getInt("id"), resultSet.getString("name"), resultSet.getBoolean("owner")));
+                var playlistDTO = mapResultsetToPlaylistDTO.map(resultSet, getTracksInPlaylist(token, resultSet.getInt("id")));
+
+                playlists.add(playlistDTO);
+                length += playlistService.lengthPlaylist(playlistDTO);
             }
         } catch (SQLException error) {
             throw new someSQLError(error);
@@ -52,6 +67,7 @@ public class PlaylistDAO {
         } else {
             var playlistsDTO = new PlaylistsDTO();
             playlistsDTO.setPlaylists(playlists);
+            playlistsDTO.setLength(length);
             return playlistsDTO;
         }
 
@@ -76,7 +92,7 @@ public class PlaylistDAO {
             var statement = conn.prepareStatement(INSERT_INTO_PLAYLIST);
             statement.setInt(1, newPlaylist.getId());
             statement.setString(2, newPlaylist.getName());
-            statement.setBoolean(3, newPlaylist.getOwner());
+            statement.setBoolean(3, true);
             statement.execute();
         } catch (MySQLIntegrityConstraintViolationException error){
             var id = newPlaylist.getId();
@@ -103,43 +119,16 @@ public class PlaylistDAO {
         return getAllPlaylists(token);
     }
 
-    public TracksDTO getTracks(String token, int playlist_id, String query) {
+    public TracksDTO getTracksInPlaylist(String token, int playlist_id) {
         userDAO.getUserByToken(token);
 
-        var tracks = new ArrayList<TrackDTO>();
+        TracksDTO tracksDTO = null;
         try {
-            var conn = JDBCConnection.createConnection();
-            var statement = conn.prepareStatement(query);
-            statement.setInt(1, playlist_id);
-            var resultSet = statement.executeQuery();
-
-            while (resultSet.next()){
-                var track = new TrackDTO();
-                track.setId(resultSet.getInt("id"));
-                track.setTitle(resultSet.getString("titel"));
-                track.setPerformer(resultSet.getString("performer"));
-                track.setDuration(resultSet.getInt("duration"));
-                track.setAlbum(resultSet.getString("album"));
-                track.setPlaycount(resultSet.getInt("playcount"));
-                track.setPublicatationDate(resultSet.getString("publicationDate"));
-                track.setDescription(resultSet.getString("description"));
-                track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
-                tracks.add(track);
-            }
+            tracksDTO = trackDAOService.getTracks(playlist_id, SELECT_TRACKS_FROM_PLAYLIST);
         } catch (SQLException error){
             throw new someSQLError(error);
         }
-        var tracksDTO = new TracksDTO();
-        tracksDTO.setTracks(tracks);
         return tracksDTO;
-
-//        if (tracks.isEmpty()){
-//            return Optional.empty();
-//        } else {
-//            var tracksDTO = new TracksDTO();
-//            tracksDTO.setTracks(tracks);
-//            return Optional.of(tracksDTO);
-//        }
     }
 
     public void addTrackToPlaylist(int playlist_id, TrackDTO newTrack){
@@ -156,7 +145,7 @@ public class PlaylistDAO {
 
     }
 
-    public void deleteTrackFromPlaylist(int playlist_id, int track_id) {
+    public void deleteTrackFromPlaylist(int track_id) {
         try {
             var conn = JDBCConnection.createConnection();
             var statement = conn.prepareStatement(DELETE_TRACK_FROM_PLAYLIST);
