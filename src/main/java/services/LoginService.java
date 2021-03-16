@@ -1,6 +1,6 @@
 package services;
 
-import datasource.errors.IncorrectLoginError;
+import datasource.errors.UserNotFoundError;
 import dto.LoginRequestDTO;
 import dto.LoginResponseDTO;
 import datasource.dao.UserDAO;
@@ -26,7 +26,7 @@ public class LoginService {
 
             return loginResponseDTO;
         }
-        throw new IncorrectLoginError();
+        throw new UserNotFoundError();
     }
 
     private String updateTokenForUser(String username) {
@@ -36,7 +36,6 @@ public class LoginService {
     }
 
     public UserDTO getUser(String username){
-        var user = userDAO.getUser(username);
-        return user;
+        return userDAO.getUser(username);
     }
 }

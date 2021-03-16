@@ -2,8 +2,8 @@ package datasource.dao;
 
 import datasource.connection.JDBCConnection;
 import datasource.errors.TokenNotFoundError;
-import datasource.errors.UserNotFoundError;
 import datasource.errors.SomeSQLError;
+import datasource.errors.UserNotFoundError;
 import datasource.resultsetMappers.MapResultsetToUserDTO;
 import dto.UserDTO;
 

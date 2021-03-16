@@ -22,6 +22,7 @@ class PlaylistControllerTest {
     private UserDAO mockedUserDAO;
     private static final String TOKEN = "hello";
     private static final int PLAYLIST_ID = 1;
+    private static final int TRACK_ID = 10;
 
     @BeforeEach
     void setUp() {
@@ -59,6 +60,8 @@ class PlaylistControllerTest {
         when(mockedPlaylistDAO.getAllPlaylists()).thenReturn(fakePlaylistsDTO);
         when(mockedPlaylistDAO.getTracksInPlaylist(PLAYLIST_ID)).thenReturn(fakeTracksDTO);
         when(mockedPlaylistDAO.addPlaylist(newPlaylistDTO)).thenReturn(fakePlaylistsDTO);
+        when(mockedPlaylistDAO.deletePlaylist(PLAYLIST_ID)).thenReturn(fakePlaylistsDTO);
+        when(mockedPlaylistDAO.editPlaylist(newPlaylistDTO)).thenReturn(fakePlaylistsDTO);
         sut.setPlaylistDAO(mockedPlaylistDAO);
 
         mockedUserDAO = mock(UserDAO.class);
@@ -139,6 +142,63 @@ class PlaylistControllerTest {
     @Test
     void addTrackToPlaylistResponseCodeTest(){
         var response = sut.addTrackToPlaylist(PLAYLIST_ID, TOKEN, newTrackDTO);
+        assertEquals(HTTP_OK, response.getStatus());
+    }
+
+    @Test
+    void deletePlaylistVerifyTest(){
+        sut.deletePlaylist(PLAYLIST_ID, TOKEN);
+        verify(mockedPlaylistDAO).deletePlaylist(PLAYLIST_ID);
+        verify(mockedUserDAO).getUserByToken(TOKEN);
+    }
+
+    @Test
+    void deletePlaylistHasEntityTest(){
+        var response = sut.deletePlaylist(PLAYLIST_ID, TOKEN);
+        assertTrue(response.hasEntity());
+    }
+
+    @Test
+    void deletePlaylistResponseCodeTest(){
+        var response = sut.deletePlaylist(PLAYLIST_ID, TOKEN);
+        assertEquals(HTTP_OK, response.getStatus());
+    }
+
+    @Test
+    void editPlaylistVerifyTest(){
+        sut.editPlaylist(TOKEN, newPlaylistDTO);
+        verify(mockedPlaylistDAO).editPlaylist(newPlaylistDTO);
+        verify(mockedUserDAO).getUserByToken(TOKEN);
+    }
+
+    @Test
+    void editPlaylistHasEntityTest(){
+        var response = sut.editPlaylist(TOKEN, newPlaylistDTO);
+        assertTrue(response.hasEntity());
+    }
+
+    @Test
+    void editPlaylistResponseCodeTest(){
+        var response = sut.editPlaylist(TOKEN, newPlaylistDTO);
+        assertEquals(HTTP_OK, response.getStatus());
+    }
+
+    @Test
+    void deleteTrackFromPlaylistVerifyTest(){
+        sut.deleteTrackFromPlaylist(PLAYLIST_ID, TRACK_ID, TOKEN);
+        verify(mockedPlaylistDAO).deleteTrackFromPlaylist(TRACK_ID);
+        verify(mockedUserDAO).getUserByToken(TOKEN);
+    }
+
+    @Test
+    void deleteTrackFromPlaylistHasEntityTest(){
+        var response = sut.deleteTrackFromPlaylist(PLAYLIST_ID, TRACK_ID, TOKEN);
+        assertTrue(response.hasEntity());
+    }
+
+    @Test
+    void deleteTrackFromPlaylistResponseCodeTest(){
+        var response = sut.deleteTrackFromPlaylist(PLAYLIST_ID, TRACK_ID, TOKEN);
         assertEquals(HTTP_OK, response.getStatus());
     }
 }
