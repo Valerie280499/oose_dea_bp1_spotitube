@@ -8,6 +8,8 @@ import dto.TrackDTO;
 import dto.TracksDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -26,6 +28,7 @@ class PlaylistControllerTest {
 
     @BeforeEach
     void setUp() {
+        sut = new PlaylistController();
         newPlaylistDTO = new PlaylistDTO(PLAYLIST_ID, "playlistONE", true);
         newTrackDTO = new TrackDTO();
 
@@ -38,7 +41,7 @@ class PlaylistControllerTest {
         fakePlaylistsDTO.setLength(10);
 
         var fakeTracksDTO = new TracksDTO();
-        var tracksDTO = new ArrayList<TrackDTO>();
+        var tracks = new ArrayList<TrackDTO>();
         var trackDTO = new TrackDTO();
 
         trackDTO.setId(1);
@@ -51,10 +54,8 @@ class PlaylistControllerTest {
         trackDTO.setDescription("description");
         trackDTO.setOfflineAvailable(true);
 
-        tracksDTO.add(trackDTO);
-        fakeTracksDTO.setTracks(tracksDTO);
-
-        sut = new PlaylistController();
+        tracks.add(trackDTO);
+        fakeTracksDTO.setTracks(tracks);
 
         mockedPlaylistDAO = mock(PlaylistDAO.class);
         when(mockedPlaylistDAO.getAllPlaylists()).thenReturn(fakePlaylistsDTO);
@@ -66,7 +67,6 @@ class PlaylistControllerTest {
 
         mockedUserDAO = mock(UserDAO.class);
         sut.setUserDAO(mockedUserDAO);
-
     }
 
     @Test
@@ -89,6 +89,12 @@ class PlaylistControllerTest {
     }
 
     @Test
+    void getAllPlaylistsInstanceOfTest(){
+        var response = sut.getAllPlaylists(TOKEN);
+        assertTrue(response instanceof Response);
+    }
+
+    @Test
     void getAllTracksInAPlaylistVerifyTest(){
         sut.getAllTracksInAPlaylist(PLAYLIST_ID, TOKEN);
         verify(mockedPlaylistDAO).getTracksInPlaylist(PLAYLIST_ID);
@@ -105,6 +111,12 @@ class PlaylistControllerTest {
     void getAllTracksInPlaylistResponseCodeTest(){
         var response = sut.getAllTracksInAPlaylist(PLAYLIST_ID, TOKEN);
         assertEquals(HTTP_OK, response.getStatus());
+    }
+
+    @Test
+    void getAllTracksInPlaylistInstanceOfTest(){
+        var response = sut.getAllTracksInAPlaylist(PLAYLIST_ID, TOKEN);
+        assertTrue(response instanceof Response);
     }
 
     @Test
@@ -127,6 +139,12 @@ class PlaylistControllerTest {
     }
 
     @Test
+    void addPlaylistInstanceOfTest(){
+        var response = sut.addPlaylist(TOKEN, newPlaylistDTO);
+        assertTrue(response instanceof Response);
+    }
+
+    @Test
     void addTrackToPlaylistVerifyTest(){
         sut.addTrackToPlaylist(PLAYLIST_ID, TOKEN, newTrackDTO);
         verify(mockedPlaylistDAO).addTrackToPlaylist(PLAYLIST_ID, newTrackDTO);
@@ -143,6 +161,12 @@ class PlaylistControllerTest {
     void addTrackToPlaylistResponseCodeTest(){
         var response = sut.addTrackToPlaylist(PLAYLIST_ID, TOKEN, newTrackDTO);
         assertEquals(HTTP_OK, response.getStatus());
+    }
+
+    @Test
+    void addTrackToPlaylistInstanceOfTest(){
+        var response = sut.addTrackToPlaylist(PLAYLIST_ID, TOKEN, newTrackDTO);
+        assertTrue(response instanceof Response);
     }
 
     @Test
@@ -165,6 +189,12 @@ class PlaylistControllerTest {
     }
 
     @Test
+    void deletePlaylistInstanceOfTest(){
+        var response = sut.deletePlaylist(PLAYLIST_ID, TOKEN);
+        assertTrue(response instanceof Response);
+    }
+
+    @Test
     void editPlaylistVerifyTest(){
         sut.editPlaylist(TOKEN, newPlaylistDTO);
         verify(mockedPlaylistDAO).editPlaylist(newPlaylistDTO);
@@ -184,6 +214,12 @@ class PlaylistControllerTest {
     }
 
     @Test
+    void editPlaylistInstanceOfTest(){
+        var response = sut.editPlaylist(TOKEN, newPlaylistDTO);
+        assertTrue(response instanceof Response);
+    }
+
+    @Test
     void deleteTrackFromPlaylistVerifyTest(){
         sut.deleteTrackFromPlaylist(PLAYLIST_ID, TRACK_ID, TOKEN);
         verify(mockedPlaylistDAO).deleteTrackFromPlaylist(TRACK_ID);
@@ -200,5 +236,11 @@ class PlaylistControllerTest {
     void deleteTrackFromPlaylistResponseCodeTest(){
         var response = sut.deleteTrackFromPlaylist(PLAYLIST_ID, TRACK_ID, TOKEN);
         assertEquals(HTTP_OK, response.getStatus());
+    }
+
+    @Test
+    void deleteTrackFromPlaylistInstanceOfTest(){
+        var response = sut.deleteTrackFromPlaylist(PLAYLIST_ID, TRACK_ID, TOKEN);
+        assertTrue(response instanceof Response);
     }
 }

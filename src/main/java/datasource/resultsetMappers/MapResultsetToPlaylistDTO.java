@@ -1,12 +1,10 @@
 package datasource.resultsetMappers;
 
 import dto.PlaylistDTO;
-import dto.TrackDTO;
 import dto.TracksDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class MapResultsetToPlaylistDTO {
 

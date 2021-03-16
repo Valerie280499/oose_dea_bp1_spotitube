@@ -13,3 +13,4 @@ public class PlaylistNotfoundErrorMapper implements ExceptionMapper<PlayListNotF
         return Response.status(400).entity(playListNotFoundError).build();
     }
 }
+

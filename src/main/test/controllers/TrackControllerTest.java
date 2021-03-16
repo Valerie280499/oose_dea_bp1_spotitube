@@ -5,6 +5,7 @@ import dto.TracksDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -15,6 +16,7 @@ class TrackControllerTest {
     private TrackController sut;
     private TrackDAO mockedTrackDAO;
     private static final String TOKEN = "hello";
+    public static final int PLAYLIST_ID = 2;
     private static final String QUERY = "SELECT T.* FROM track T where id not in (select P.idTrack FROM playlistTracks P WHERE P.idPlaylist = ?)";
 
     @BeforeEach
@@ -39,26 +41,32 @@ class TrackControllerTest {
         tracksDTO.setTracks(tracks);
 
         mockedTrackDAO = mock(TrackDAO.class);
-        when(mockedTrackDAO.getTracksWhichAreNotInAPlaylist(TOKEN, 2)).thenReturn(tracksDTO);
+        when(mockedTrackDAO.getTracksWhichAreNotInAPlaylist(TOKEN, PLAYLIST_ID)).thenReturn(tracksDTO);
         sut.setTrackDAO(mockedTrackDAO);
 
     }
 
     @Test
     void getAllTracksVerifyTest() {
-        sut.getAllTracks(TOKEN, 2);
-        verify(mockedTrackDAO).getTracksWhichAreNotInAPlaylist(TOKEN, 2);
+        sut.getAllTracks(TOKEN, PLAYLIST_ID);
+        verify(mockedTrackDAO).getTracksWhichAreNotInAPlaylist(TOKEN, PLAYLIST_ID);
     }
 
     @Test
     void getAllTracksResponsecodeTest(){
-        var response = sut.getAllTracks(TOKEN, 2);
+        var response = sut.getAllTracks(TOKEN, PLAYLIST_ID);
         assertEquals(HTTP_OK, response.getStatus());
     }
 
     @Test
     void getAllTracksHasEntityTest() {
-        var response = sut.getAllTracks(TOKEN, 2);
+        var response = sut.getAllTracks(TOKEN, PLAYLIST_ID);
         assertTrue(response.hasEntity());
+    }
+
+    @Test
+    void getAllTracksInstanceOfTest(){
+        var response = sut.getAllTracks(TOKEN, PLAYLIST_ID);
+        assertTrue(response instanceof Response);
     }
 }

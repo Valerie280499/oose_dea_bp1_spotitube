@@ -1,6 +1,6 @@
 package datasource.dao;
 
-import datasource.connection.JDBCConnection;
+import datasource.connection.JDBCDatabaseConnection;
 import datasource.resultsetMappers.MapResultsetToTrackDTO;
 import dto.TrackDTO;
 import dto.TracksDTO;
@@ -10,17 +10,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class TrackDAOService {
-    private datasource.connection.JDBCConnection JDBCConnection;
+    private JDBCDatabaseConnection JDBCDatabaseConnection;
     private MapResultsetToTrackDTO mapResultsetToTrackDTO;
 
-    @Inject public void setJDBCConnection(JDBCConnection JDBCConnection){ this.JDBCConnection = JDBCConnection; }
+    @Inject public void setJDBCConnection(JDBCDatabaseConnection JDBCDatabaseConnection){ this.JDBCDatabaseConnection = JDBCDatabaseConnection; }
 
     @Inject public void setMapResultsetToTrackDTO(MapResultsetToTrackDTO mapResultsetToTrackDTO){ this.mapResultsetToTrackDTO = mapResultsetToTrackDTO;}
 
     public TracksDTO getTracks(int playlist_id, String query) throws SQLException {
         var tracks = new ArrayList<TrackDTO>();
 
-        var conn = JDBCConnection.createConnection();
+        var conn = JDBCDatabaseConnection.createConnection();
         var statement = conn.prepareStatement(query);
         statement.setInt(1, playlist_id);
         var resultSet = statement.executeQuery();

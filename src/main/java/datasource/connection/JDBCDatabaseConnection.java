@@ -6,7 +6,7 @@ import javax.ejb.Singleton;
 import java.sql.*;
 
 @Singleton
-public class JDBCConnection {
+public class JDBCDatabaseConnection {
     private JDBC4Connection conn;
 
     public JDBC4Connection createConnection() throws SQLException {
