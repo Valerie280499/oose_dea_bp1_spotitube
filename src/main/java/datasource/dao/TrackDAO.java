@@ -1,6 +1,6 @@
 package datasource.dao;
 
-import datasource.errors.someSQLError;
+import datasource.errors.SomeSQLError;
 import dto.TracksDTO;
 
 import javax.inject.Inject;
@@ -22,7 +22,7 @@ public class TrackDAO {
         try{
             tracksDTO = trackDAOService.getTracks(playlist_id, SELECT_TRACKS_WHERE_ID_NOT_IN_PLAYLIST);
         } catch (SQLException error) {
-            throw new someSQLError(error);
+            throw new SomeSQLError(error);
         }
         return tracksDTO;
     }

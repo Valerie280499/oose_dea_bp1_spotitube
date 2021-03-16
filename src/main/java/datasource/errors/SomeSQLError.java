@@ -2,8 +2,8 @@ package datasource.errors;
 
 import java.sql.SQLException;
 
-public class someSQLError extends RuntimeException {
-    public someSQLError(SQLException error) {
+public class SomeSQLError extends RuntimeException {
+    public SomeSQLError(SQLException error) {
         error.printStackTrace();
     }
 

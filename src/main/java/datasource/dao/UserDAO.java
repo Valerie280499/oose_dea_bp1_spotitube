@@ -1,8 +1,10 @@
 package datasource.dao;
 
 import datasource.connection.JDBCConnection;
+import datasource.errors.TokenNotFoundError;
 import datasource.errors.UserNotFoundError;
-import datasource.errors.someSQLError;
+import datasource.errors.SomeSQLError;
+import datasource.resultsetMappers.MapResultsetToUserDTO;
 import dto.UserDTO;
 
 import javax.inject.Inject;
@@ -15,11 +17,13 @@ public class UserDAO {
     public static final String USERNAME_FROM_LOGIN_WHERE_TOKEN = "SELECT username FROM login WHERE token = ?";
     public static final String UPDATE_LOGIN_SET_TOKEN_WHERE_USERNAME = "UPDATE LOGIN SET token = ? WHERE username = ?";
     private JDBCConnection JDBCConnection;
+    private MapResultsetToUserDTO mapResultsetToUserDTO;
 
-    @Inject
-    public void setJDBCConnection(JDBCConnection JDBCConnection) {
+    @Inject public void setJDBCConnection(JDBCConnection JDBCConnection) {
         this.JDBCConnection = JDBCConnection;
     }
+
+    @Inject public void setMapResultsetToUserDTO(MapResultsetToUserDTO mapResultsetToUserDTO){this.mapResultsetToUserDTO = mapResultsetToUserDTO;}
 
     public UserDTO getUser(String username) {
         try{
@@ -36,7 +40,7 @@ public class UserDAO {
             }
 
         } catch(SQLException error){
-            throw new someSQLError(error);
+            throw new SomeSQLError(error);
         }
     }
 
@@ -51,7 +55,7 @@ public class UserDAO {
             statement.execute();
 
         } catch (SQLException error){
-            throw new someSQLError(error);
+            throw new SomeSQLError(error);
         }
     }
 
@@ -62,10 +66,14 @@ public class UserDAO {
             var statement = conn.prepareStatement(USERNAME_FROM_LOGIN_WHERE_TOKEN);
 
             statement.setString(1, token);
-            statement.execute();
+            var foundUser = executeQuery(statement);
+
+            if (foundUser.isEmpty()) {
+                throw new TokenNotFoundError();
+            }
 
         } catch (SQLException error){
-            throw new someSQLError(error);
+            throw new SomeSQLError(error);
         }
     }
 
@@ -73,8 +81,7 @@ public class UserDAO {
         var userList = new ArrayList<UserDTO>();
         var resultSet = statement.executeQuery();
         resultSet.next();
-        var user = new UserDTO(resultSet.getString("username"), resultSet.getString("password"), resultSet.getString("token"));
-        userList.add(user);
+        userList.add(mapResultsetToUserDTO.map(resultSet));
         return userList;
     }
 }
