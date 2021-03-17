@@ -1,6 +1,5 @@
 package datasource.dao;
 
-import datasource.errors.SomeSQLError;
 import dto.TracksDTO;
 
 import javax.inject.Inject;
@@ -14,12 +13,12 @@ public class TrackDAO {
 
     @Inject public void setUserDAO(UserDAO userDAO){ this.userDAO = userDAO;}
 
-    @Inject public void setTrackService(TrackDAOService trackDAOService){ this.trackDAOService = trackDAOService;}
+    @Inject public void setTrackDAOService(TrackDAOService trackDAOService){ this.trackDAOService = trackDAOService;}
 
     public TracksDTO getTracksWhichAreNotInAPlaylist(String token, int playlist_id){
         userDAO.getUserByToken(token);
 
-        TracksDTO tracksDTO = null;
+        TracksDTO tracksDTO;
         try{
             tracksDTO = trackDAOService.getTracks(playlist_id, SELECT_TRACKS_WHERE_ID_NOT_IN_PLAYLIST);
         } catch (SQLException error) {

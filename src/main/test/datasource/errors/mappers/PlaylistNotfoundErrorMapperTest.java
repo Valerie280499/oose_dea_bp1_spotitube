@@ -20,7 +20,6 @@ class PlaylistNotfoundErrorMapperTest {
     void playlistNotfoundErrorMapperHasEntityTest(){
         var response = sut.toResponse(new PlayListNotFoundError());
         assertTrue(response.hasEntity());
-
     }
 
     @Test

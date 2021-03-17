@@ -3,7 +3,6 @@ package datasource.dao;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import datasource.connection.JDBCDatabaseConnection;
 import datasource.errors.PlayListNotFoundError;
-import datasource.errors.SomeSQLError;
 import datasource.resultsetMappers.MapResultsetToPlaylistDTO;
 import dto.PlaylistDTO;
 import dto.PlaylistsDTO;
