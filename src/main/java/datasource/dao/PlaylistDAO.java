@@ -1,5 +1,6 @@
 package datasource.dao;
 
+import com.mysql.jdbc.JDBC4Connection;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import datasource.connection.JDBCDatabaseConnection;
 import datasource.errors.PlayListNotFoundError;
@@ -24,25 +25,24 @@ public class PlaylistDAO {
     private static final String INSERT_NEW_TRACK_INTO_PLAYLIST = "INSERT INTO playlistTracks (idPlaylist, idTrack, offlineAvailable) VALUES (?, ?, ?)";
     private static final String UPDATE_PLAYLIST_NAME = "UPDATE playlist SET name = ? WHERE id = ?";
 
-    private JDBCDatabaseConnection JDBCDatabaseConnection;
+    private JDBC4Connection JDBCconnection;
     private PlaylistService playlistService;
     private MapResultsetToPlaylistDTO mapResultsetToPlaylistDTO;
     private TrackDAOService trackDAOService;
 
-    @Inject public void setJDBCConnection(JDBCDatabaseConnection JDBCDatabaseConnection){this.JDBCDatabaseConnection = JDBCDatabaseConnection;}
+    @Inject public void setJDBCConnection(JDBCDatabaseConnection JDBCDatabaseConnection){this.JDBCconnection = JDBCDatabaseConnection.createConnection();}
 
     @Inject public void setPlaylistService(PlaylistService playlistService){this.playlistService = playlistService;}
 
     @Inject public void setMapResultsetToPlaylistDTO(MapResultsetToPlaylistDTO mapResultsetToPlaylistDTO){ this.mapResultsetToPlaylistDTO = mapResultsetToPlaylistDTO;}
 
-    @Inject public void setTrackService(TrackDAOService trackDAOService) { this.trackDAOService = trackDAOService;}
+    @Inject public void setTrackDAOService(TrackDAOService trackDAOService) { this.trackDAOService = trackDAOService;}
 
     public PlaylistsDTO getAllPlaylists(){
         ArrayList<PlaylistDTO> playlists = new ArrayList<>();
         var totalTrackLengthInAllPlaylists = 0;
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(SELECT_FROM_PLAYLIST);
+            var statement = JDBCconnection.prepareStatement(SELECT_FROM_PLAYLIST);
             var resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -68,8 +68,7 @@ public class PlaylistDAO {
 
     public PlaylistsDTO deletePlaylist(int playlist_id) {
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(DELETE_PLAYLIST);
+            var statement = JDBCconnection.prepareStatement(DELETE_PLAYLIST);
             statement.setInt(1, playlist_id);
             statement.execute();
         } catch (SQLException error) {
@@ -81,8 +80,7 @@ public class PlaylistDAO {
 
     public PlaylistsDTO addPlaylist(PlaylistDTO newPlaylist) {
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(INSERT_INTO_PLAYLIST);
+            var statement = JDBCconnection.prepareStatement(INSERT_INTO_PLAYLIST);
             statement.setInt(1, newPlaylist.getId());
             statement.setString(2, newPlaylist.getName());
             statement.setBoolean(3, true);
@@ -100,8 +98,7 @@ public class PlaylistDAO {
 
     public PlaylistsDTO editPlaylist(PlaylistDTO newPlaylist) {
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(UPDATE_PLAYLIST_NAME);
+            var statement = JDBCconnection.prepareStatement(UPDATE_PLAYLIST_NAME);
             statement.setString(1, newPlaylist.getName());
             statement.setInt(2, newPlaylist.getId());
             statement.execute();
@@ -125,8 +122,7 @@ public class PlaylistDAO {
 
     public void addTrackToPlaylist(int playlist_id, TrackDTO newTrack){
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(INSERT_NEW_TRACK_INTO_PLAYLIST);
+            var statement = JDBCconnection.prepareStatement(INSERT_NEW_TRACK_INTO_PLAYLIST);
             statement.setInt(1, playlist_id);
             statement.setInt(2, newTrack.getId());
             statement.setBoolean(3, newTrack.getOfflineAvailable());
@@ -139,8 +135,7 @@ public class PlaylistDAO {
 
     public void deleteTrackFromPlaylist(int track_id) {
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(DELETE_TRACK_FROM_PLAYLIST);
+            var statement = JDBCconnection.prepareStatement(DELETE_TRACK_FROM_PLAYLIST);
             statement.setInt(1, track_id);
             statement.execute();
         } catch (SQLException error) {

@@ -1,8 +1,8 @@
 package datasource.dao;
 
+import com.mysql.jdbc.JDBC4Connection;
 import datasource.connection.JDBCDatabaseConnection;
 import datasource.errors.TokenNotFoundError;
-import datasource.errors.SomeSQLError;
 import datasource.errors.UserNotFoundError;
 import datasource.resultsetMappers.MapResultsetToUserDTO;
 import dto.UserDTO;
@@ -14,22 +14,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class UserDAO {
-    public static final String QUERY = "SELECT * FROM login WHERE username = ?";
-    public static final String USERNAME_FROM_LOGIN_WHERE_TOKEN = "SELECT username FROM login WHERE token = ?";
+    public static final String SELECT_FROM_LOGIN_WHERE_USERNAME = "SELECT * FROM login WHERE username = ?";
+    public static final String USERNAME_FROM_LOGIN_WHERE_TOKEN = "SELECT * FROM login WHERE token = ?";
     public static final String UPDATE_LOGIN_SET_TOKEN_WHERE_USERNAME = "UPDATE LOGIN SET token = ? WHERE username = ?";
-    private JDBCDatabaseConnection JDBCDatabaseConnection;
+    private JDBC4Connection JDBCconnection;
     private MapResultsetToUserDTO mapResultsetToUserDTO;
 
     @Inject public void setJDBCConnection(JDBCDatabaseConnection JDBCDatabaseConnection) {
-        this.JDBCDatabaseConnection = JDBCDatabaseConnection;
+        this.JDBCconnection = JDBCDatabaseConnection.createConnection();
     }
 
     @Inject public void setMapResultsetToUserDTO(MapResultsetToUserDTO mapResultsetToUserDTO){this.mapResultsetToUserDTO = mapResultsetToUserDTO;}
 
     public UserDTO getUser(String username) {
+
         try{
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement =  conn.prepareStatement(QUERY);
+            var statement =  JDBCconnection.prepareStatement(SELECT_FROM_LOGIN_WHERE_USERNAME);
 
             statement.setString(1, username);
             var foundUser = executeQuery(statement);
@@ -48,14 +48,14 @@ public class UserDAO {
     public void updateTokenForUser(String username, String token) {
 
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(UPDATE_LOGIN_SET_TOKEN_WHERE_USERNAME);
+            var statement = JDBCconnection.prepareStatement(UPDATE_LOGIN_SET_TOKEN_WHERE_USERNAME);
 
             statement.setString(1, token);
             statement.setString(2, username);
             statement.execute();
 
         } catch (SQLException error){
+            error.printStackTrace();
             throw new ServerErrorException(500);
         }
     }
@@ -63,8 +63,7 @@ public class UserDAO {
     public void getUserByToken(String token) {
 
         try {
-            var conn = JDBCDatabaseConnection.createConnection();
-            var statement = conn.prepareStatement(USERNAME_FROM_LOGIN_WHERE_TOKEN);
+            var statement = JDBCconnection.prepareStatement(USERNAME_FROM_LOGIN_WHERE_TOKEN);
 
             statement.setString(1, token);
             var foundUser = executeQuery(statement);
@@ -81,8 +80,11 @@ public class UserDAO {
     public ArrayList<UserDTO> executeQuery(PreparedStatement statement) throws SQLException{
         var userList = new ArrayList<UserDTO>();
         var resultSet = statement.executeQuery();
-        resultSet.next();
-        userList.add(mapResultsetToUserDTO.map(resultSet));
+
+        if(resultSet.next()){
+            var userDTO = mapResultsetToUserDTO.map(resultSet);
+            userList.add(userDTO);
+        }
         return userList;
     }
 }
