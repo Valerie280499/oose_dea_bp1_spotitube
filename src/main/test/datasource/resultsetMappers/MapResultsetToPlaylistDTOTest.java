@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +48,11 @@ class MapResultsetToPlaylistDTOTest {
         trackDTO.setDuration(2);
         trackDTO.setAlbum("album");
         trackDTO.setPlaycount(5);
-        trackDTO.setPublicatationDate("01-01-01");
+        try {
+            trackDTO.setPublicatationDate(new SimpleDateFormat("yyyy-MM-dd").parse("01-01-01"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         trackDTO.setDescription("description");
         trackDTO.setOfflineAvailable(true);
 

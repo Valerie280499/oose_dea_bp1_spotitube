@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.ws.rs.core.Response;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import static java.net.HttpURLConnection.HTTP_OK;
@@ -50,7 +52,11 @@ class PlaylistControllerTest {
         trackDTO.setDuration(2);
         trackDTO.setAlbum("album");
         trackDTO.setPlaycount(5);
-        trackDTO.setPublicatationDate("01-01-01");
+        try {
+            trackDTO.setPublicatationDate(new SimpleDateFormat("yyyy-MM-dd").parse("01-01-01"));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         trackDTO.setDescription("description");
         trackDTO.setOfflineAvailable(true);
 

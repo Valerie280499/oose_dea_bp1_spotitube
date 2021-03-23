@@ -4,6 +4,8 @@ import dto.TrackDTO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class MapResultsetToTrackDTO {
 
@@ -15,9 +17,16 @@ public class MapResultsetToTrackDTO {
         track.setDuration(resultSet.getInt("duration"));
         track.setAlbum(resultSet.getString("album"));
         track.setPlaycount(resultSet.getInt("playcount"));
-        track.setPublicatationDate(resultSet.getString("publicationDate"));
+        var stringPublicationDate = resultSet.getString("publicationDate");
         track.setDescription(resultSet.getString("description"));
         track.setOfflineAvailable(resultSet.getBoolean("offlineAvailable"));
+
+        try {
+            var datePublicationDate = new SimpleDateFormat("yyyy-MM-dd").parse(stringPublicationDate);
+            track.setPublicatationDate(datePublicationDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         return track;
     }
 }

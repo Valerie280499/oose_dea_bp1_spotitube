@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -116,12 +119,15 @@ class MapResultsetToTrackDTOTest {
 
     @Test
     void mapPublicationDateTest(){
+
+        Date expectedPublicationDate = null;
+        try { expectedPublicationDate = new SimpleDateFormat("yyyy-MM-dd").parse("01-01-01");
+        } catch (ParseException e) { e.printStackTrace(); }
+
         try{
             var trackDTO = sut.map(mockedResultSet);
-            assertEquals("01-01-01", trackDTO.getPublicatationDate());
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+            assertEquals(expectedPublicationDate, (trackDTO.getPublicatationDate()));
+        } catch (SQLException throwables) { throwables.printStackTrace(); }
     }
 
     @Test

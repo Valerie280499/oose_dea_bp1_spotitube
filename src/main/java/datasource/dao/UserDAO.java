@@ -45,7 +45,7 @@ public class UserDAO {
         }
     }
 
-    public void updateTokenForUser(String username, String token) {
+    public boolean updateTokenForUser(String username, String token) {
 
         try {
             var statement = JDBCconnection.prepareStatement(UPDATE_LOGIN_SET_TOKEN_WHERE_USERNAME);
@@ -58,9 +58,10 @@ public class UserDAO {
             error.printStackTrace();
             throw new ServerErrorException(500);
         }
+        return true;
     }
 
-    public void getUserByToken(String token) {
+    public UserDTO getUserByToken(String token) {
 
         try {
             var statement = JDBCconnection.prepareStatement(USERNAME_FROM_LOGIN_WHERE_TOKEN);
@@ -70,6 +71,8 @@ public class UserDAO {
 
             if (foundUser.isEmpty()) {
                 throw new TokenNotFoundError();
+            } else{
+                return foundUser.get(0);
             }
 
         } catch (SQLException error){

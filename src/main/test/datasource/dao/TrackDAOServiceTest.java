@@ -8,8 +8,11 @@ import dto.TracksDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,7 +20,7 @@ import static org.mockito.Mockito.*;
 class TrackDAOServiceTest {
     private TrackDAOService sut;
     private JDBCDatabaseConnection mockedJDBCDatabaseConnection;
-    private JDBC4Connection mockedJDBCconnection;
+    private JDBC4Connection mockedJDBC4Connection;
     private MapResultsetToTrackDTO mockedMapResultsetToTrackDTO;
     private ResultSet fakeResultset;
     private static final String FAKE_QUERY = "SELECT T.* FROM track T where id = ?";
@@ -26,15 +29,6 @@ class TrackDAOServiceTest {
 
     @BeforeEach
     void setUp() {
-        sut = new TrackDAOService();
-
-//        mockedJDBCDatabaseConnection = new JDBCDatabaseConnection();
-//        sut.setJDBCConnection(mockedJDBCDatabaseConnection);
-
-        mockedJDBCDatabaseConnection = mock(JDBCDatabaseConnection.class);
-        mockedJDBCconnection = mock(JDBC4Connection.class);
-        when(mockedJDBCDatabaseConnection.createConnection()).thenReturn(mockedJDBCconnection);
-        sut.setJDBCConnection(mockedJDBCDatabaseConnection);
 
         var fakeTrackDTO = new TrackDTO();
         fakeTrackDTO.setId(1);
@@ -43,17 +37,30 @@ class TrackDAOServiceTest {
         fakeTrackDTO.setDuration(2);
         fakeTrackDTO.setAlbum("album");
         fakeTrackDTO.setPlaycount(5);
-        fakeTrackDTO.setPublicatationDate("01-01-01");
+        try { fakeTrackDTO.setPublicatationDate(new SimpleDateFormat("yyyy-MM-dd").parse("01-01-01"));
+        } catch (ParseException e) { e.printStackTrace(); }
         fakeTrackDTO.setDescription("description");
         fakeTrackDTO.setOfflineAvailable(true);
 
         try {
+            mockedJDBCDatabaseConnection = mock(JDBCDatabaseConnection.class);
+            mockedJDBC4Connection = mock(JDBC4Connection.class);
+            var mockedPreparedStatement = mock(PreparedStatement.class);
+            var mockedResultSet = mock(ResultSet.class);
+
+            when(mockedJDBCDatabaseConnection.createConnection()).thenReturn(mockedJDBC4Connection);
+            when(mockedJDBC4Connection.prepareStatement(anyString())).thenReturn(mockedPreparedStatement);
+            when(mockedPreparedStatement.executeQuery()).thenReturn(mockedResultSet);
+            when(mockedResultSet.next()).thenReturn(true).thenReturn(false);
+
             mockedMapResultsetToTrackDTO = mock(MapResultsetToTrackDTO.class);
             when(mockedMapResultsetToTrackDTO.map(fakeResultset)).thenReturn(fakeTrackDTO);
-            sut.setMapResultsetToTrackDTO(mockedMapResultsetToTrackDTO);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+
+        } catch (SQLException throwables) { throwables.printStackTrace(); }
+
+        sut = new TrackDAOService();
+        sut.setJDBCConnection(mockedJDBCDatabaseConnection);
+        sut.setMapResultsetToTrackDTO(mockedMapResultsetToTrackDTO);
     }
 
     @Test
@@ -74,10 +81,5 @@ class TrackDAOServiceTest {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
-
-    @Test
-    void getTracksThrowsError(){
-        assertThrows(SQLException.class, () -> sut.getTracks(PLAYLIST_ID, ERROR_QUERY));
     }
 }

@@ -2,6 +2,7 @@ package datasource.dao;
 
 import com.mysql.jdbc.JDBC4Connection;
 import datasource.connection.JDBCDatabaseConnection;
+import datasource.errors.PlayListNotFoundError;
 import datasource.resultsetMappers.MapResultsetToPlaylistDTO;
 import dto.PlaylistDTO;
 import dto.PlaylistsDTO;
@@ -11,35 +12,41 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.PlaylistService;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 class PlaylistDAOTest {
     private PlaylistDAO sut;
     private JDBCDatabaseConnection mockedJDBCDatabaseConnection;
     private PlaylistService mockedPlaylistService;
+    private JDBC4Connection mockedJDBC4Connection;
     private MapResultsetToPlaylistDTO mockedMapResultsetToPlaylistDTO;
     private TrackDAOService mockedTrackDAOService;
     private ResultSet fakeResultset;
-    private PlaylistDTO newPlaylist;
+    private PlaylistDTO playlistDTO;
     private TrackDTO newTrack;
     private TracksDTO tracksDTO;
     private static final String SELECT_TRACKS_FROM_PLAYLIST = "SELECT T.* FROM track T INNER JOIN playlistTracks P ON T.id = P.idTrack WHERE P.idPlaylist = ?";
+    private static final String DELETE_FROM_PLAYLIST_WHERE_ID = "DELETE FROM playlist WHERE id = ?";
+    private static final String INSERT_NEW_TRACK_INTO_PLAYLIST = "INSERT INTO playlistTracks (idPlaylist, idTrack, offlineAvailable) VALUES (?, ?, ?)";
 
     @BeforeEach
     void setUp() {
 
-        newPlaylist = new PlaylistDTO();
-        newPlaylist.setId(4);
-        newPlaylist.setName("fourth list");
-        newPlaylist.setOwner(true);
+        playlistDTO = new PlaylistDTO();
+        playlistDTO.setId(4);
+        playlistDTO.setName("fourth list");
+        playlistDTO.setOwner(true);
 
-        var fakePlaylistDTO = new PlaylistDTO();
+        var fakePlaylistDTO = mock(PlaylistDTO.class);
         fakePlaylistDTO.setId(5);
         fakePlaylistDTO.setName("null");
         fakePlaylistDTO.setOwner(false);
@@ -53,7 +60,11 @@ class PlaylistDAOTest {
         newTrack.setDuration(2);
         newTrack.setAlbum("album");
         newTrack.setPlaycount(5);
-        newTrack.setPublicatationDate("01-01-01");
+
+        try {
+            newTrack.setPublicatationDate(new SimpleDateFormat("yyyy-MM-dd").parse("01-01-01"));
+        } catch (ParseException e) { e.printStackTrace(); }
+
         newTrack.setDescription("description");
         newTrack.setOfflineAvailable(true);
 
@@ -65,17 +76,23 @@ class PlaylistDAOTest {
 
         try {
             mockedJDBCDatabaseConnection = mock(JDBCDatabaseConnection.class);
-            var fakeConn = mock(JDBC4Connection.class);
-            when(mockedJDBCDatabaseConnection.createConnection()).thenReturn(fakeConn);
-//
-//            mockedMapResultsetToPlaylistDTO = mock(MapResultsetToPlaylistDTO.class);
-//            when(mockedMapResultsetToPlaylistDTO.map(fakeResultset, tracksDTO)).thenReturn(fakePlaylistDTO);
+            mockedJDBC4Connection = mock(JDBC4Connection.class);
+            var mockedPreparedStatement = mock(PreparedStatement.class);
+            var mockedResultSet = mock(ResultSet.class);
+
+            when(mockedJDBCDatabaseConnection.createConnection()).thenReturn(mockedJDBC4Connection);
+            when(mockedJDBC4Connection.prepareStatement(anyString())).thenReturn(mockedPreparedStatement);
+            when(mockedPreparedStatement.executeQuery()).thenReturn(mockedResultSet);
+            when(mockedResultSet.next()).thenReturn(true).thenReturn(false);
+
+            mockedMapResultsetToPlaylistDTO = mock(MapResultsetToPlaylistDTO.class);
+            when(mockedMapResultsetToPlaylistDTO.map(fakeResultset, tracksDTO)).thenReturn(fakePlaylistDTO);
 
             mockedTrackDAOService = mock(TrackDAOService.class);
             when(mockedTrackDAOService.getTracks(5, SELECT_TRACKS_FROM_PLAYLIST)).thenReturn(tracksDTO);
 
             mockedPlaylistService = mock(PlaylistService.class);
-            when(mockedPlaylistService.lengthPlaylist(fakePlaylistDTO)).thenReturn(5);
+            when(mockedPlaylistService.generateLengthPlaylist(fakePlaylistDTO)).thenReturn(5);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -85,7 +102,7 @@ class PlaylistDAOTest {
 
         sut.setPlaylistService(mockedPlaylistService);
         sut.setTrackDAOService(mockedTrackDAOService);
-//        sut.setMapResultsetToPlaylistDTO(mockedMapResultsetToPlaylistDTO);
+        sut.setMapResultsetToPlaylistDTO(mockedMapResultsetToPlaylistDTO);
         sut.setJDBCConnection(mockedJDBCDatabaseConnection);
     }
 
@@ -107,29 +124,28 @@ class PlaylistDAOTest {
         assertTrue(playlistsDTO instanceof PlaylistsDTO);
     }
     @Test
-    void deletePlaylistCountTest(){
-        var oldPlaylistsDTO = sut.getAllPlaylists();
-        var newPlaylistsDTO = sut.deletePlaylist(5);
-
-        assertNotEquals(oldPlaylistsDTO.getPlaylists().size(), newPlaylistsDTO.getPlaylists().size());
+    void deletePlaylistThrowsErrorTest(){
+        sut.getAllPlaylists();
+        assertThrows(PlayListNotFoundError.class,
+                () -> sut.deletePlaylist(5));
     }
 
     @Test
     void addPlaylistCountTest(){
-        var playlistsDTO = sut.addPlaylist(newPlaylist);
-        assertEquals(2, playlistsDTO);
+        var playlistsDTO = sut.addPlaylist(playlistDTO);
+        assertEquals(1, playlistsDTO.getPlaylists().size());
     }
 
     @Test
     void editPlaylistInstanceOfTest(){
-        var playlistsDTO = sut.editPlaylist(newPlaylist);
+        var playlistsDTO = sut.editPlaylist(playlistDTO);
         assertTrue(playlistsDTO instanceof PlaylistsDTO);
     }
 
     @Test
     void editPlaylistCountTest(){
-        var playlistsDTO = sut.editPlaylist(newPlaylist);
-        assertEquals("fourth list", playlistsDTO.getPlaylists().stream().filter(playlistDTO -> playlistDTO.getId() == 4));
+        var playlistsDTO = sut.addPlaylist(playlistDTO);
+        assertTrue(playlistsDTO instanceof PlaylistsDTO);
     }
 
     @Test
@@ -150,10 +166,23 @@ class PlaylistDAOTest {
         assertTrue(tracksDTO instanceof TracksDTO);
     }
     @Test
-    void addTrackToPlaylistTest(){
-        sut.addTrackToPlaylist(5, newTrack);
-        var tracksDTO = sut.getTracksInPlaylist(5);
-        assertEquals(2, tracksDTO.getTracks().size());
+    void addTrackToPlaylistVerifyTest(){
+        try {
+            sut.addTrackToPlaylist(5, newTrack);
+            verify(mockedJDBC4Connection).prepareStatement(INSERT_NEW_TRACK_INTO_PLAYLIST);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    @Test
+    void deleteTrackFromPlaylistVerifyTest(){
+        try {
+            sut.deletePlaylist(5);
+            verify(mockedJDBC4Connection).prepareStatement(DELETE_FROM_PLAYLIST_WHERE_ID);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
 }

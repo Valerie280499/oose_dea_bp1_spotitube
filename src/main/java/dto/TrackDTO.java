@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.Date;
+
 public class TrackDTO {
     private int id;
     private String title;
@@ -7,7 +9,7 @@ public class TrackDTO {
     private int duration;
     private String album;
     private int playcount;
-    private String publicationDate;
+    private Date publicationDate;
     private String description;
     private boolean offlineAvailable;
 
@@ -59,11 +61,11 @@ public class TrackDTO {
         this.playcount = playcount;
     }
 
-    public String getPublicatationDate() {
+    public Date getPublicatationDate() {
         return publicationDate;
     }
 
-    public void setPublicatationDate(String publicatationDate) {
+    public void setPublicatationDate(Date publicatationDate) {
         this.publicationDate = publicatationDate;
     }
 

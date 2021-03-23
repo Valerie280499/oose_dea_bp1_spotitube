@@ -17,45 +17,37 @@ import static org.mockito.Mockito.*;
 
 class UserDAOTest {
     private UserDAO sut;
-    private JDBCDatabaseConnection mockedJDBCDatabaseConnection;
     private JDBC4Connection mockedJDBCconnection;
     private MapResultsetToUserDTO mockedMapResultsetToUserDTO;
-    private ResultSet fakeResultset;
+    private PreparedStatement mockedPreparedStatement;
     public static final String UPDATE_TEST_QUERY = "UPDATE LOGIN SET token = ? WHERE username = ?";
     public static final String WHERE_TOKEN_QUERY = "SELECT * FROM login WHERE token = ?";
-    public static final String WHERE_USERNAME_QUERY = "SELECT * FROM login WHERE username = ?";
 
 
     @BeforeEach
     void setUp() {
-        mockedJDBCDatabaseConnection = mock(JDBCDatabaseConnection.class);
 
-        var fakeUserDTO = new UserDTO();
-        fakeUserDTO.setUsername("fakeName");
-        fakeUserDTO.setPassword("fakePassword");
-        fakeUserDTO.setToken("fakeToken");
-
+        sut = new UserDAO();
         try {
+            JDBCDatabaseConnection mockedJDBCDatabaseConnection = mock(JDBCDatabaseConnection.class);
             mockedJDBCconnection = mock(JDBC4Connection.class);
+            mockedPreparedStatement = mock(PreparedStatement.class);
+            var mockedResultSet = mock(ResultSet.class);
+            var userDTO = mock(UserDTO.class);
+
             when(mockedJDBCDatabaseConnection.createConnection()).thenReturn(mockedJDBCconnection);
+            when(mockedJDBCconnection.prepareStatement(anyString())).thenReturn(mockedPreparedStatement);
+            when(mockedPreparedStatement.executeQuery()).thenReturn(mockedResultSet);
+            when(mockedResultSet.next()).thenReturn(true).thenReturn(false);
+            sut.setJDBCConnection(mockedJDBCDatabaseConnection);
 
             mockedMapResultsetToUserDTO = mock(MapResultsetToUserDTO.class);
-            when(mockedMapResultsetToUserDTO.map(fakeResultset)).thenReturn(fakeUserDTO);
+            when(mockedMapResultsetToUserDTO.map(any())).thenReturn(userDTO);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-
-        sut = new UserDAO();
-
-        sut.setJDBCConnection(mockedJDBCDatabaseConnection);
         sut.setMapResultsetToUserDTO(mockedMapResultsetToUserDTO);
-    }
-
-    @Test
-    void getUserPasswordTest(){
-        var userDTO = sut.getUser("fakeName");
-        assertEquals("fakePassword", userDTO.getPassword());
     }
 
     @Test
@@ -79,22 +71,6 @@ class UserDAOTest {
         try{
             sut.getUserByToken("fakeToken");
             verify(mockedJDBCconnection).prepareStatement(WHERE_TOKEN_QUERY);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    @Test
-    void getUserbyTokenUnknownTokenTest(){
-        assertThrows(TokenNotFoundError.class, () -> sut.getUserByToken("unknownToken"));
-    }
-
-    @Test
-    void executeQueryVerifyTest(){
-        try {
-            var preparedStatement = mockedJDBCconnection.prepareStatement(WHERE_USERNAME_QUERY);
-            sut.executeQuery(preparedStatement);
-            verify(mockedMapResultsetToUserDTO).map(fakeResultset);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

@@ -49,7 +49,7 @@ public class PlaylistDAO {
                 var playlistDTO = mapResultsetToPlaylistDTO.map(resultSet, getTracksInPlaylist(resultSet.getInt("id")));
 
                 playlists.add(playlistDTO);
-                totalTrackLengthInAllPlaylists += playlistService.lengthPlaylist(playlistDTO);
+                totalTrackLengthInAllPlaylists += playlistService.generateLengthPlaylist(playlistDTO);
             }
         } catch (SQLException error) {
             throw new ServerErrorException(500);
@@ -125,12 +125,11 @@ public class PlaylistDAO {
             var statement = JDBCconnection.prepareStatement(INSERT_NEW_TRACK_INTO_PLAYLIST);
             statement.setInt(1, playlist_id);
             statement.setInt(2, newTrack.getId());
-            statement.setBoolean(3, newTrack.getOfflineAvailable());
+            statement.setBoolean(3, true);
             statement.execute();
         } catch (SQLException error) {
             throw new ServerErrorException(500);
         }
-
     }
 
     public void deleteTrackFromPlaylist(int track_id) {

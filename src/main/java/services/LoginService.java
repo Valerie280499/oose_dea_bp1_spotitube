@@ -10,9 +10,9 @@ import javax.inject.Inject;
 import static java.util.UUID.randomUUID;
 
 public class LoginService {
+    private UserDAO userDAO;
 
-    @Inject
-    protected UserDAO userDAO = new UserDAO();
+    @Inject public void setUserDAO(UserDAO userDAO){this.userDAO = userDAO;}
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         var user = getUser(loginRequestDTO.getUser());
